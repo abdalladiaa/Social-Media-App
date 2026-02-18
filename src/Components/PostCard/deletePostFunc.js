@@ -1,6 +1,5 @@
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
-import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 
 export async function deletePostFunc(postId) {
   try {

@@ -3,7 +3,7 @@ import { FaRegHeart, FaRegComment, FaShare } from "react-icons/fa";
 import { formatDistanceToNow } from "date-fns";
 import { MdDeleteOutline } from "react-icons/md";
 import { AuthContext } from "../../Context/AuthContext";
-import { deletePostFunc } from "./DeletePostFunc";
+import { deletePostFunc } from "./deletePostFunc";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import CommenCard from "../Comments/CommenCard";
 import { Link } from "react-router-dom";
