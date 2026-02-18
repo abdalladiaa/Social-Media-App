@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+@layer components {
+  nav .active {
+    @apply bg-[#E2E8F0] text-[#0066FF] font-bold;
+  }
+}
