@@ -191,13 +191,6 @@ export default function Login() {
             message={msg}
           />
         )}
-
-        <button
-          type="button"
-          className="mx-auto block text-sm font-semibold text-[#0066FF] transition hover:text-[#00C2A8] hover:underline"
-        >
-          Forgot password?
-        </button>
       </form>
     </>
   );
