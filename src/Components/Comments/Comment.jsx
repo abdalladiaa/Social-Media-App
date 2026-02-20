@@ -101,33 +101,33 @@ export default function Comment({ comment, post }) {
               Reply
             </button>
           </div>
-          {comment.commentCreator._id === userData.id ||
-            (post.user._id === userData.id && (
-              <>
-                <button
-                  ref={buttonRef}
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-colors"
-                >
-                  <FaEllipsisV size={12} />
-                </button>
+          {(comment.commentCreator._id === userData.id ||
+            post.user._id === userData.id) && (
+            <>
+              <button
+                ref={buttonRef}
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-colors"
+              >
+                <FaEllipsisV size={12} />
+              </button>
 
-                {menuOpen && (
-                  <div
-                    ref={menuRef}
-                    className="absolute right-0 top-25 z-10 w-32 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white py-1 shadow-lg"
+              {menuOpen && (
+                <div
+                  ref={menuRef}
+                  className="absolute right-0 top-25 z-10 w-32 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white py-1 shadow-lg"
+                >
+                  <button
+                    onClick={deleteMutate}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-[#F7FAFF] transition-colors"
                   >
-                    <button
-                      onClick={deleteMutate}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-[#F7FAFF] transition-colors"
-                    >
-                      <FaTrash size={14} />
-                      {deleteIsPending ? "Deleting..." : "Delete"}
-                    </button>
-                  </div>
-                )}
-              </>
-            ))}
+                    <FaTrash size={14} />
+                    {deleteIsPending ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
