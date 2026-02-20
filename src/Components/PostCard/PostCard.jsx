@@ -195,7 +195,7 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
 
         {/* Post content */}
-        <p className={`text-[#0B1733] mb-3 ${showUpdateInput && "hidden"}`}>
+        <p className={`text-[#0B1733] mb-3 overflow-hidden w-full wrap-break-word ${!!showUpdateInput && "hidden"}`}>
           {body}
         </p>
         <form
