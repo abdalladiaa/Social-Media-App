@@ -5,14 +5,17 @@ import { MdDeleteOutline } from "react-icons/md";
 import { AuthContext } from "../../Context/AuthContext";
 import { deletePostFunc } from "./deletePostFunc";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
-import CommenCard from "../Comments/CommenCard";
+import CommenCard from "../Comments/CommentCard";
 import { Link } from "react-router-dom";
+import usePostComments from "../../CustomHooks/usePostComments";
+import LoadingComments from "../Comments/LoadingComments";
+import CommentCard from "../Comments/CommentCard";
+import { FcLike } from "react-icons/fc";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const { userData } = useContext(AuthContext);
-  console.log(post);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -32,13 +35,15 @@ export default function PostCard({ post }) {
     image: postPhoto,
     sharesCount,
     topComment,
+    likes,
+    commentsCount,
   } = post;
-  const { name: userName, photo: UserPhoto, _id: userId } = post.user;
-  const formatedPostDate = formatDistanceToNow(new Date(createdAt), {
-    addSuffix: true,
-  });
 
-  const firstComment = topComment?.content;
+  const { name: userName, photo: UserPhoto, _id: userId } = post?.user;
+
+  const formatedPostDate = createdAt
+    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
+    : "";
 
   const { mutate: deleteMutate, isPending: deleteIsPending } =
     useGenericMutation(
@@ -48,8 +53,17 @@ export default function PostCard({ post }) {
       "Post Doesn't Deleted",
     );
 
+  //! ==========================Comments============================
+
+  const {
+    data,
+    isLoading: commentsIsLoading,
+    isFetched: commentsIsFetched,
+  } = usePostComments(postId, isDetailes);
+  const postComments = data?.data.comments;
+
   return (
-    <article className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 sm:p-5 mb-4 transition hover:shadow-md w-full max-w-xl mx-auto">
+    <article className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 sm:p-5 mb-4 transition hover:shadow-md w-full mx-auto">
       {/* Header: user info + timestamp */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
@@ -70,6 +84,8 @@ export default function PostCard({ post }) {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="rounded-full p-1.5 text-[#61708A] hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors"
+            aria-haspopup="true"
+            aria-expanded={menuOpen}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +126,7 @@ export default function PostCard({ post }) {
                 </svg>
                 Save post
               </button>
-              {userData.id === userId && (
+              {userData?.id === userId && (
                 <button
                   onClick={deleteMutate}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
@@ -132,7 +148,7 @@ export default function PostCard({ post }) {
         <div className="rounded-xl overflow-hidden mb-3 border border-[#E2E8F0]">
           <img
             src={postPhoto}
-            alt={body}
+            alt={body || "post image"}
             className="w-full h-auto object-cover"
           />
         </div>
@@ -140,7 +156,10 @@ export default function PostCard({ post }) {
 
       {/* Engagement stats (likes, comments) */}
       <div className="flex items-center justify-between text-sm text-[#61708A] border-t border-[#E2E8F0] pt-3 mt-2">
-        <span>{post.likes.length} likes</span>
+        <span className="flex items-center gap-2">
+          {" "}
+          <FcLike /> {likes.length} likes{" "}
+        </span>
         <div className="flex gap-x-5">
           <span className="flex items-center gap-x-1">
             <svg
@@ -162,17 +181,20 @@ export default function PostCard({ post }) {
               <path d="M11 6h6a2 2 0 0 1 2 2v10"></path>
             </svg>
             {"  "}
-            {sharesCount} shares
+            {sharesCount || 0} shares
           </span>
-          <span>{post.commentsCount} comments</span>
-          <Link to={`/detailes/${postId}`} className="text-[#0066FF] text-xs font-bold cursor-pointer hover:text-[#00C2A8] transition-colors">
+          <span>{commentsCount} comments</span>
+          <Link
+            to={`/detailes/${postId}`}
+            className="text-[#0066FF] text-xs font-bold cursor-pointer hover:text-[#00C2A8] transition-colors"
+          >
             view details
           </Link>
         </div>
       </div>
 
       {/* Action buttons (static, no logic) */}
-      <div className="flex items-center justify-around mt-2">
+      <div className="flex items-center justify-around mt-2 py-2">
         {/* Like button */}
         <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
           <FaRegHeart className="text-lg" />
@@ -180,10 +202,13 @@ export default function PostCard({ post }) {
         </div>
 
         {/* Comment button */}
-        <button className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
+        <Link
+          to={`/detailes/${postId}`}
+          className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full"
+        >
           <FaRegComment className="text-lg" />
           <span>Comment</span>
-        </button>
+        </Link>
 
         {/* Share button */}
         <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
@@ -191,7 +216,13 @@ export default function PostCard({ post }) {
           <span>Share</span>
         </div>
       </div>
-      { firstComment && <CommenCard comment={topComment} />}
+      {!isDetailes && topComment && (
+        <CommentCard comment={topComment} post={post} />
+      )}
+      {isDetailes && commentsIsLoading && <LoadingComments />}
+      {commentsIsFetched && isDetailes && postComments && (
+        <CommenCard comment={postComments} isDetailes={true} post={post} />
+      )}
     </article>
   );
 }

@@ -38,7 +38,6 @@ export default function Register() {
         "https://route-posts.routemisr.com/users/signup",
         values,
       );
-      console.log(data);
       if (data.success) {
         setMsg("success");
         localStorage.setItem("token", data.data.token);
@@ -48,7 +47,6 @@ export default function Register() {
       const serverError = err?.response?.data?.errors;
       setMsg(serverError);
     } finally {
-      console.log(msg);
       setLoading(false);
     }
   }
@@ -101,7 +99,7 @@ export default function Register() {
           </div>
 
           {/* Username */}
-          <div>
+          <div className="w-full">
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
                 <svg
@@ -136,7 +134,7 @@ export default function Register() {
           </div>
 
           {/* Email */}
-          <div>
+          <div className="w-full">
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
                 <svg
@@ -171,7 +169,7 @@ export default function Register() {
           </div>
 
           {/* Date of birth */}
-          <div>
+          <div className="w-full">
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
                 <svg
@@ -208,9 +206,9 @@ export default function Register() {
           </div>
 
           {/* Password */}
-          <div>
+          <div className="w-full">
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
+              <span className=" pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={18}
@@ -284,7 +282,7 @@ export default function Register() {
           </div>
 
           {/* Repassword */}
-          <div>
+          <div className="w-full">
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
                 <svg

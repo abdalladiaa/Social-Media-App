@@ -7,6 +7,10 @@ input::-ms-clear {
 
 @layer components {
   nav .active {
-    @apply bg-[#E2E8F0] text-[#0066FF] font-bold;
+    @apply bg-[#d7dde4] text-[#0066FF] font-bold;
   }
+}
+
+body{
+  background-color: #F0F2F5;
 }

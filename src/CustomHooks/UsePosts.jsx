@@ -10,7 +10,6 @@ export default function usePosts(queryKey, isEnabled, endPoint) {
         `https://route-posts.routemisr.com/${endPoint}`,
         headersObjData(),
       );
-      console.log(data);
 
       return data;
     } catch (err) {

@@ -9,6 +9,7 @@ import AuthPage from "../Pages/AuthPage/AuthPage";
 import PostsGuard from "../Guards/PostsGuard";
 import AuthGuard from "../Guards/AuthGuard";
 import PostDetailes from "../Pages/PostDetailes/PostDetailes";
+import Notifications from "../Pages/Notifications/Notifications";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path:"detailes/:postId",
         element: <PostsGuard><PostDetailes/></PostsGuard>
+      },
+      {
+        path:"notifications",
+        element: <PostsGuard><Notifications/></PostsGuard>
       }
     ],
   },

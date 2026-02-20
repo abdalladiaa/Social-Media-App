@@ -11,7 +11,6 @@ export default function Navbar() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const { userData, setToken } = useContext(AuthContext);
   const navigate = useNavigate();
-  console.log(userData);
   function signout() {
     localStorage.removeItem("token");
     setToken(null);
@@ -19,9 +18,9 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between px-4 sm:px-8 py-1 bg-white shadow-md sticky top-0 z-50">
+    <nav className="flex items-center justify-between px-4 sm:px-8 py-1  bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
       <div className=" text-md md:text-2xl  font-bold text-[#0066FF]">SocialApp</div>
-      <div className="flex min-w-0 items-center gap-1 overflow-x-auto rounded-2xl border border-[#E2E8F0] bg-[#F7FAFF] px-1 py-1 sm:px-1.5">
+      <div className="flex min-w-0 items-center gap-1 overflow-x-auto rounded-2xl border border-[#E2E8F0] bg-gray-200 backdrop-blur-md px-1 py-1 sm:px-1.5">
         <NavLink
           className="relative flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm font-extrabold transition sm:gap-2 sm:px-3.5 text-[#61708A] hover:text-[#00C2A8]"
           to="/"
