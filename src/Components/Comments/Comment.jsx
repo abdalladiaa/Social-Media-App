@@ -5,10 +5,13 @@ import { FaEllipsisV, FaTrash } from "react-icons/fa";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { headersObjData } from "../../Helper/HeadersObj";
 import { AuthContext } from "../../Context/AuthContext";
+import { MdModeEdit } from "react-icons/md";
+import { useForm } from "react-hook-form";
 
 export default function Comment({ comment, post }) {
   const { userData } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showUpdateInput, setShowUpdateInput] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   console.log(comment, "comment");
@@ -56,6 +59,43 @@ export default function Comment({ comment, post }) {
       "Comment Dosn't Delete",
     );
 
+  // !===========Handle Comment Update BTN==================
+
+  const { register, handleSubmit, reset, setValue } = useForm({
+    defaultValues: {
+      content: "",
+    },
+  });
+
+  function handleCommentUpdateBtn() {
+    setShowUpdateInput(true);
+    setMenuOpen(false);
+    setValue("content", comment.content);
+  }
+
+  async function updateComment(values) {
+    const formData = new FormData();
+    formData.append("content", values.content);
+    try {
+      const { data } = await axios.put(
+        `https://route-posts.routemisr.com/posts/${comment.post}/comments/${comment._id}`,
+        formData,
+        headersObjData(),
+      );
+      setShowUpdateInput(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const { mutate: updateMutate, isPending: updateIsPending } =
+    useGenericMutation(
+      updateComment,
+      ["comments", comment.post],
+      "Comment Updated Successfully",
+      "Comment Doesn't Update",
+    );
+
   return (
     <div className="relative flex items-start gap-2 mb-2">
       <img
@@ -77,14 +117,40 @@ export default function Comment({ comment, post }) {
               )) || <p className="text-xs text-slate-500 flex">member</p>}
             </div>
           </div>
-          <p className="mt-1 whitespace-pre-wrap text-sm text-slate-800">
+          <p
+            className={`mt-1 whitespace-pre-wrap text-sm text-slate-800 ${showUpdateInput && "hidden"}`}
+          >
             {comment.content}
           </p>
+          <form
+            onSubmit={handleSubmit(updateMutate)}
+            className={`mt-2 items-center gap-2 ${showUpdateInput ? "flex" : "hidden"}`}
+          >
+            <input
+              {...register("content")}
+              className="w-full rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm"
+            />
+            <button
+              type="submit"
+              className="rounded-full bg-[#1877f2] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#166fe5] disabled:opacity-60"
+            >
+              {updateIsPending ? "Saving..." : "Save"}
+            </button>
+            <button
+              onClick={() => {
+                setShowUpdateInput(false);
+                reset();
+              }}
+              className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
+            >
+              Cancel
+            </button>
+          </form>
           {comment.image && (
             <img
               src={comment.image}
               alt="comment attachment"
-              className="mt-2 max-h-60 w-full rounded-lg object-cover border border-[#E2E8F0]"
+              className={`mt-2 max-h-60 w-full rounded-lg object-cover border border-[#E2E8F0] ${showUpdateInput && "hidden"} `}
             />
           )}
         </div>
@@ -104,28 +170,39 @@ export default function Comment({ comment, post }) {
           {(comment.commentCreator._id === userData.id ||
             post.user._id === userData.id) && (
             <>
-              <button
-                ref={buttonRef}
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-colors"
-              >
-                <FaEllipsisV size={12} />
-              </button>
-
-              {menuOpen && (
-                <div
-                  ref={menuRef}
-                  className="absolute right-0 top-25 z-10 w-32 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white py-1 shadow-lg"
+              <div className="relative">
+                <button
+                  ref={buttonRef}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-colors"
                 >
-                  <button
-                    onClick={deleteMutate}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-[#F7FAFF] transition-colors"
+                  <FaEllipsisV size={12} />
+                </button>
+
+                {menuOpen && (
+                  <div
+                    ref={menuRef}
+                    className="absolute right-0 z-10 w-32 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white py-1 shadow-lg"
                   >
-                    <FaTrash size={14} />
-                    {deleteIsPending ? "Deleting..." : "Delete"}
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={deleteMutate}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-[#F7FAFF] transition-colors font-semibold"
+                    >
+                      <FaTrash size={14} />
+                      {deleteIsPending ? "Deleting..." : "Delete"}
+                    </button>
+                    {comment.commentCreator._id === userData.id && (
+                      <button
+                        onClick={handleCommentUpdateBtn}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm  text-yellow-500 hover:bg-[#F7FAFF] transition-colors font-semibold"
+                      >
+                        <MdModeEdit size={14} />
+                        Update
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
