@@ -11,11 +11,15 @@ import usePostComments from "../../CustomHooks/usePostComments";
 import LoadingComments from "../Comments/LoadingComments";
 import CommentCard from "../Comments/CommentCard";
 import { FcLike } from "react-icons/fc";
+import ImagePreview from "./ImagePreview";
 
 export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const { userData } = useContext(AuthContext);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const openImagePreview = () => setIsImagePreviewOpen(true);
+  const closeImagePreview = () => setIsImagePreviewOpen(false);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -145,7 +149,10 @@ export default function PostCard({ post, isDetailes = false }) {
 
       {/* Post image */}
       {postPhoto && (
-        <div className="rounded-xl overflow-hidden mb-3 border border-[#E2E8F0]">
+        <div
+          onClick={openImagePreview}
+          className=" cursor-pointer max-h-155 rounded-xl overflow-hidden mb-3 border border-[#E2E8F0]"
+        >
           <img
             src={postPhoto}
             alt={body || "post image"}
@@ -154,7 +161,7 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
       )}
 
-      {/* Engagement stats (likes, comments) */}
+      {/*//! (likes, comments) */}
       <div className="flex items-center justify-between text-sm text-[#61708A] border-t border-[#E2E8F0] pt-3 mt-2">
         <span className="flex items-center gap-2">
           {" "}
@@ -222,6 +229,11 @@ export default function PostCard({ post, isDetailes = false }) {
       {isDetailes && commentsIsLoading && <LoadingComments />}
       {commentsIsFetched && isDetailes && postComments && (
         <CommenCard comment={postComments} isDetailes={true} post={post} />
+      )}
+
+      {/* //! Image Prevew */}
+      {isImagePreviewOpen && (
+        <ImagePreview image={postPhoto} onClose={closeImagePreview} />
       )}
     </article>
   );
