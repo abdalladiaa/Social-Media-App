@@ -2,15 +2,13 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { useForm } from "react-hook-form";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
-import { useParams } from "react-router-dom";
 import { IoSendSharp } from "react-icons/io5";
 import { Oval } from "react-loader-spinner";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import { TbXboxX } from "react-icons/tb";
 
-export default function AddComment() {
-  const { postId } = useParams();
+export default function AddComment({postId}) {
   const { userData } = useContext(AuthContext);
   const { photo, name } = userData;
 
@@ -59,7 +57,7 @@ export default function AddComment() {
   );
 
   return (
-    <form className="flex items-start gap-2" onSubmit={handleSubmit(mutate)}>
+    <form className="flex items-start gap-2 sticky bottom-0 " onSubmit={handleSubmit(mutate)}>
       <img
         alt={name}
         className="h-9 w-9 rounded-full object-cover"

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import Comment from "./Comment";
 import AddComment from "./AddComment";
 
-export default function CommentCard({ comment, isDetailes = false, post }) {
-  console.log(comment, "comment");
+export default function CommentCard({ comment, isDetailes = false, post, onOpenComments }) {
+  console.log(post, "PostId");
 
   return (
     <>
@@ -17,14 +17,23 @@ export default function CommentCard({ comment, isDetailes = false, post }) {
         {!isDetailes && <Comment comment={comment} post={post} />}
         {isDetailes &&
           comment.map((comment) => <Comment key={comment._id} comment={comment} post={post} />)}
-        {isDetailes && <AddComment />}
+        {isDetailes && <AddComment postId = {post.idF} />}
         {!isDetailes && (
-          <Link
-            to={`/detailes/${comment.post}`}
-            className=" cursor-pointer mt-2 text-xs font-bold text-[#1877f2] hover:underline"
-          >
-            view all comments
-          </Link>
+          (onOpenComments ? (
+            <button
+              onClick={() => onOpenComments(comment.post)}
+              className=" cursor-pointer mt-2 text-xs font-bold text-[#1877f2] hover:underline"
+            >
+              view all comments
+            </button>
+          ) : (
+            <Link
+              to={`/detailes/${comment.post}`}
+              className=" cursor-pointer mt-2 text-xs font-bold text-[#1877f2] hover:underline"
+            >
+              view all comments
+            </Link>
+          ))
         )}
       </div>
     </>

@@ -15,6 +15,7 @@ import ImagePreview from "./ImagePreview";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
+import AllComments from "../Comments/AllComments";
 
 export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,12 +62,17 @@ export default function PostCard({ post, isDetailes = false }) {
       "Post Doesn't Deleted",
     );
 
+  // controls for comments preview modal and lazy fetching
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const openComments = () => setIsCommentsOpen(true);
+  const closeComments = () => setIsCommentsOpen(false);
+
   const {
     data,
     isLoading: commentsIsLoading,
     isFetched: commentsIsFetched,
-  } = usePostComments(postId, isDetailes);
-  const postComments = data?.data.comments;
+  } = usePostComments(postId, isDetailes || isCommentsOpen);
+  const postComments = data?.data?.comments;
 
   //! ==========================Update Post============================
 
@@ -292,13 +298,13 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
 
         {/* Comment button */}
-        <Link
-          to={`/detailes/${postId}`}
+        <button
+          onClick={openComments}
           className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full"
         >
           <FaRegComment className="text-lg" />
           <span>Comment</span>
-        </Link>
+        </button>
 
         {/* Share button */}
         <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
@@ -307,7 +313,7 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
       </div>
       {!isDetailes && topComment && (
-        <CommentCard comment={topComment} post={post} />
+        <CommentCard comment={topComment} post={post} onOpenComments={openComments} />
       )}
       {isDetailes && commentsIsLoading && <LoadingComments />}
       {commentsIsFetched && isDetailes && postComments && (
@@ -317,6 +323,16 @@ export default function PostCard({ post, isDetailes = false }) {
       {/* //! Image Prevew */}
       {isImagePreviewOpen && (
         <ImagePreview image={postPhoto} onClose={closeImagePreview} />
+      )}
+
+      {/* Comments preview modal */}
+      {isCommentsOpen && (
+        <AllComments
+          comments={postComments}
+          onClose={closeComments}
+          isLoading={commentsIsLoading}
+          post={post}
+        />
       )}
     </article>
   );
