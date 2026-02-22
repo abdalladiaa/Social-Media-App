@@ -27,7 +27,7 @@ export default function AllComments({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm "
       onClick={handleBackdropClick}
     >
-      <div className="max-w-2xl w-full max-h-[80vh] overflow-auto rounded-lg bg-white p-4 relative mx-3 pt-0">
+      <div className="max-w-2xl w-full max-h-[80vh] overflow-auto rounded-lg bg-white px-4 relative mx-3">
         <div className="sticky top-0 z-99 bg-white p-3 flex items-center justify-between">
           <h3 className="mb-3 text-lg font-semibold">All Comments</h3>
           <button

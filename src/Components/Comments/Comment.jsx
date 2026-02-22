@@ -14,9 +14,6 @@ export default function Comment({ comment, post }) {
   const [showUpdateInput, setShowUpdateInput] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
-  console.log(comment, "comment");
-  console.log(userData, "userData");
-  console.log(post, "post");
 
   //! Exit menu on outside click
   useEffect(() => {

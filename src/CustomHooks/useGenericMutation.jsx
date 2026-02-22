@@ -5,8 +5,8 @@ import { toast } from "react-hot-toast";
 export function useGenericMutation(
   mutationFunc,
   queryKeysToInvalidate = [],
-  successMsg = "Operation successful",
-  errorMsg = "Something went wrong",
+  successMsg,
+  errorMsg,
 ) {
   const queryClient = useQueryClient();
 
@@ -16,13 +16,12 @@ export function useGenericMutation(
       queryKeysToInvalidate.forEach((key) =>
         queryClient.invalidateQueries([key]),
       );
-      toast.success(successMsg);
+      !!successMsg && toast.success(successMsg);
     },
     onError: () => {
-      toast.error(errorMsg);
+       !!errorMsg && toast.error(errorMsg);
     },
   });
 
   return mutation;
 }
-

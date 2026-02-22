@@ -57,7 +57,7 @@ export default function AddComment({postId}) {
   );
 
   return (
-    <form className="flex items-start gap-2 sticky bottom-0 " onSubmit={handleSubmit(mutate)}>
+    <form className="flex items-start gap-2 sticky bottom-0 bg-white py-2" onSubmit={handleSubmit(mutate)}>
       <img
         alt={name}
         className="h-9 w-9 rounded-full object-cover"

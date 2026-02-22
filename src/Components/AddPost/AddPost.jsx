@@ -6,6 +6,7 @@ import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { TbXboxX } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 export default function AddPost() {
   const { userData } = useContext(AuthContext);
@@ -18,7 +19,6 @@ export default function AddPost() {
 
   const bodyValue = watch("body");
   const imageValue = watch("image");
-  console.log();
 
   const isFormEmpty =
     !bodyValue?.trim() && (!imageValue || imageValue.length === 0);
@@ -27,7 +27,6 @@ export default function AddPost() {
     const formData = new FormData();
     formData.append("body", values.body || " ");
     if (values.image && values.image[0]) {
-      console.log(values, "values");
 
       formData.append("image", values.image[0]);
     }
@@ -62,11 +61,13 @@ export default function AddPost() {
       <form onSubmit={handleSubmit(mutate)}>
         {/* Header: user avatar + input field */}
         <div className="flex items-start gap-3 mb-3">
+          <Link to={"/profile"}>
           <img
             src={userData?.photo}
             alt={userData?.name}
             className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0]"
           />
+          </Link>
 
           <div className="flex-1">
             <textarea

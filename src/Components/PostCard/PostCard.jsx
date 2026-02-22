@@ -10,12 +10,13 @@ import { Link } from "react-router-dom";
 import usePostComments from "../../CustomHooks/usePostComments";
 import LoadingComments from "../Comments/LoadingComments";
 import CommentCard from "../Comments/CommentCard";
-import { FcLike } from "react-icons/fc";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import ImagePreview from "./ImagePreview";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import AllComments from "../Comments/AllComments";
+import { likePostFunc } from "./LikePostFunc";
 
 export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,11 +49,15 @@ export default function PostCard({ post, isDetailes = false }) {
     commentsCount,
   } = post;
 
+  console.log(likes, "likes");
+
   const { name: userName, photo: UserPhoto, _id: userId } = post?.user;
 
   const formatedPostDate = createdAt
     ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
     : "";
+
+  //!==================DELETE POST===================================
 
   const { mutate: deleteMutate, isPending: deleteIsPending } =
     useGenericMutation(
@@ -112,6 +117,13 @@ export default function PostCard({ post, isDetailes = false }) {
       "Post Doesn't Update",
     );
 
+  // !===========================LIKE POST=============================
+
+  const { mutate: likePostMutate, isPending: likePostIsPending } =
+    useGenericMutation(() => likePostFunc(postId), ["allPosts", "userPosts"]);
+
+  const isLiked = likes?.some((id) => id === userData?.id);
+
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 sm:p-5 mb-4 transition hover:shadow-md w-full mx-auto">
       {/* Header: user info + timestamp */}
@@ -158,7 +170,7 @@ export default function PostCard({ post, isDetailes = false }) {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white py-1 shadow-lg">
+              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white  shadow-lg">
                 <button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-[#0B1733] hover:bg-[#F7FAFF] transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +213,9 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
 
         {/* Post content */}
-        <p className={`text-[#0B1733] mb-3 overflow-hidden w-full wrap-break-word ${!!showUpdateInput && "hidden"}`}>
+        <p
+          className={`text-[#0B1733] mb-3 overflow-hidden w-full wrap-break-word ${!!showUpdateInput && "hidden"}`}
+        >
           {body}
         </p>
         <form
@@ -252,7 +266,7 @@ export default function PostCard({ post, isDetailes = false }) {
       <div className="flex items-center justify-between text-sm text-[#61708A] border-t border-[#E2E8F0] pt-3 mt-2">
         <span className="flex items-center gap-2">
           {" "}
-          <FcLike /> {likes.length} likes{" "}
+          <AiFillLike className="text-blue-600" /> {likes.length} likes{" "}
         </span>
         <div className="flex gap-x-5">
           <span className="flex items-center gap-x-1">
@@ -292,8 +306,16 @@ export default function PostCard({ post, isDetailes = false }) {
       {/* Action buttons (static, no logic) */}
       <div className="flex items-center justify-around mt-2 py-2">
         {/* Like button */}
-        <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
-          <FaRegHeart className="text-lg" />
+        <div
+          onClick={() => likePostMutate()}
+          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full ${!!isLiked && "bg-blue-50"} `}
+        >
+          {isLiked ? (
+            <AiFillLike className="text-blue-600" />
+          ) : (
+            <AiOutlineLike className="text-lg" />
+          )}
+
           <span>Like</span>
         </div>
 
@@ -313,7 +335,11 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
       </div>
       {!isDetailes && topComment && (
-        <CommentCard comment={topComment} post={post} onOpenComments={openComments} />
+        <CommentCard
+          comment={topComment}
+          post={post}
+          onOpenComments={openComments}
+        />
       )}
       {isDetailes && commentsIsLoading && <LoadingComments />}
       {commentsIsFetched && isDetailes && postComments && (
