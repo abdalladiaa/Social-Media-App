@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import AllComments from "../Comments/AllComments";
-import { likePostFunc } from "./likePostFunc";
+import { likePostFunc } from "./LikePostFunc";
 
 export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
