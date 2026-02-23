@@ -9,7 +9,6 @@ export function useGenericMutation(
   errorMsg,
 ) {
   const queryClient = useQueryClient();
-
   const mutation = useMutation({
     mutationFn: mutationFunc,
     onSuccess: () => {
