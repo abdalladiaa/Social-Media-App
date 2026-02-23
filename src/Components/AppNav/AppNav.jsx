@@ -82,7 +82,6 @@ export default function Navbar() {
               className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-gray-100"
               alt="user"
             />
-            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
           </div>
           {/* اسم المستخدم يختفي في الشاشات الصغيرة جداً */}
           <span className="hidden md:inline font-bold text-sm text-gray-700">

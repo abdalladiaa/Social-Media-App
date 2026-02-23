@@ -21,8 +21,6 @@ export default function ProfileDetailsCard({ userData, posts }) {
             alt={userData?.name}
             className="w-28 h-28 rounded-full object-cover ring-4 ring-white shadow-lg"
           />
-          {/* نقطة خضراء صغيرة لبيان حالة الاتصال (اختياري، يمكنك إزالتها) */}
-          <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
         </div>
 
         <h2 className="mt-5 text-2xl font-bold text-[#0B1733]">
