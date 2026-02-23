@@ -10,12 +10,15 @@ export default function CommentCard({
   post,
   onOpenComments,
 }) {
-  // التحقق من وجود تعليقات
+  // التحقق من وجود بيانات للتعليق
   const hasComments = Array.isArray(comment) ? comment.length > 0 : !!comment;
+
+  // استخراج الـ ID الصحيح للمنشور لتمريره لصندوق التعليقات
+  const postIdForAdd = post?._id || post?.id || comment?.post;
 
   return (
     <div className="mx-2 mb-3 overflow-hidden rounded-2xl border border-gray-100 bg-gray-50/40 p-3 transition-all hover:bg-gray-50/80">
-      {/* شارة التوب كومنت - تظهر فقط إذا لم نكن في صفحة التفاصيل */}
+      {/* شارة التوب كومنت - ستايل احترافي */}
       {!isDetailes && hasComments && (
         <div className="flex items-center gap-1.5 mb-3">
           <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -25,48 +28,59 @@ export default function CommentCard({
         </div>
       )}
 
-      {/* عرض التعليق الفردي (في الـ Feed) */}
+      {/* عرض التعليق الفردي في الـ Feed */}
       {!isDetailes && comment && (
         <div className="group relative">
           <Comment comment={comment} post={post} />
         </div>
       )}
 
-      {/* عرض قائمة التعليقات كاملة (في صفحة التفاصيل) */}
-      {isDetailes && Array.isArray(comment) && (
-        <div className="space-y-4 mb-4">
-          {comment.map((item) => (
-            <Comment key={item._id} comment={item} post={post} />
-          ))}
-          <div className="pt-2">
-            <AddComment postId={post?.idF} />
+      {/* عرض قائمة التعليقات كاملة في صفحة التفاصيل فقط */}
+      {isDetailes && (
+        <div className="space-y-4">
+          {Array.isArray(comment) && comment.length > 0 ? (
+            comment.map((item) => (
+              <Comment key={item._id} comment={item} post={post} />
+            ))
+          ) : (
+            <p className="text-center py-4 text-xs text-gray-400 font-medium">
+              No comments yet. Start the conversation!
+            </p>
+          )}
+
+          <div className="pt-3 border-t border-gray-100">
+            <AddComment postId={postIdForAdd} />
           </div>
         </div>
       )}
 
-      {/* زر عرض الكل - تم تحسينه بصرياً */}
+      {/* زر "عرض الكل" - يظهر فقط في الـ Feed */}
       {!isDetailes && (
         <div className="mt-3 pt-2 border-t border-gray-200/50">
           {onOpenComments ? (
             <button
               onClick={() => onOpenComments(comment?.post)}
-              className="flex items-center gap-2 text-[12px] font-bold text-blue-600 hover:text-blue-700 transition-colors group cursor-pointer"
+              className="flex items-center gap-2 text-[12px] font-bold text-blue-600 hover:text-blue-700 transition-all group cursor-pointer w-full text-left"
             >
-              <HiOutlineChatBubbleLeftRight
-                size={16}
-                className="group-hover:rotate-12 transition-transform"
-              />
+              <div className="p-1 rounded-lg group-hover:bg-blue-50 transition-colors">
+                <HiOutlineChatBubbleLeftRight
+                  size={16}
+                  className="group-hover:scale-110 transition-transform"
+                />
+              </div>
               View all conversation
             </button>
           ) : (
             <Link
               to={`/detailes/${comment?.post}`}
-              className="flex items-center gap-2 text-[12px] font-bold text-blue-600 hover:text-blue-700 transition-colors group"
+              className="flex items-center gap-2 text-[12px] font-bold text-blue-600 hover:text-blue-700 transition-all group"
             >
-              <HiOutlineChatBubbleLeftRight
-                size={16}
-                className="group-hover:rotate-12 transition-transform"
-              />
+              <div className="p-1 rounded-lg group-hover:bg-blue-50 transition-colors">
+                <HiOutlineChatBubbleLeftRight
+                  size={16}
+                  className="group-hover:scale-110 transition-transform"
+                />
+              </div>
               View full discussion
             </Link>
           )}

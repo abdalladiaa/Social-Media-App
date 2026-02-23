@@ -6,7 +6,7 @@ import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import { HiOutlineArrowDown } from "react-icons/hi2";
 
 export default function Posts() {
-  const [postsPagination, setPostsPagination] = useState(10);
+  const [postsPagination, setPostsPagination] = useState(40);
 
   const { data, isLoading, isFetching, isFetched } = usePosts(
     ["allPosts", postsPagination],
@@ -34,18 +34,9 @@ export default function Posts() {
 
         {/* عرض المنشورات بعد الجلب */}
         {isFetched &&
-          data?.data?.posts?.map((post, index) => (
-            <div
-              key={post._id}
-              className="animate-in fade-in slide-in-from-bottom-6 duration-700 ease-out"
-              style={{ animationDelay: `${index * 50}ms` }} // تأثير ظهور تتابعي ناعم
-            >
-              <PostCard post={post} />
-            </div>
-          ))}
+          data?.data?.posts?.map((post) => <PostCard post={post} />)}
       </div>
 
-      {/* زر تحميل المزيد - مظهر بريميوم */}
       {isFetched && data?.data?.posts?.length >= postsPagination && (
         <div className="mt-12 flex flex-col items-center gap-4">
           <button
