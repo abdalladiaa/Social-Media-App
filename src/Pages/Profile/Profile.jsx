@@ -4,6 +4,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import PostCard from "../../Components/PostCard/PostCard";
 import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import AddPost from "../../Components/AddPost/AddPost";
+import ProfileDetailesCard from "../../Components/ProfileDetailesCard/ProfileDetailesCard";
 
 export default function Profile() {
   const { userData } = useContext(AuthContext);
@@ -13,12 +14,15 @@ export default function Profile() {
     `users/${userData?._id}/posts?limit=10`,
   );
 
+  const posts = data?.data.posts;
+
   return (
     <>
+      <ProfileDetailesCard userData={userData} posts ={posts} />
       <AddPost />
       {(isLoading || Boolean(userData?._id) == false) && <LoadingCard />}
       {isFetched &&
-        data.data.posts.map((post) => <PostCard key={post._id} post={post} />)}
+        posts.map((post) => <PostCard key={post._id} post={post} />)}
     </>
   );
 }

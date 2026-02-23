@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { FaImage, FaTimes } from "react-icons/fa";
+import { FaImage } from "react-icons/fa";
 import { AuthContext } from "../../Context/AuthContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
-import { TbXboxX } from "react-icons/tb";
+import { IoCloseCircle } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 export default function AddPost() {
@@ -27,7 +27,6 @@ export default function AddPost() {
     const formData = new FormData();
     formData.append("body", values.body || " ");
     if (values.image && values.image[0]) {
-
       formData.append("image", values.image[0]);
     }
     try {
@@ -36,73 +35,71 @@ export default function AddPost() {
         formData,
         headersObjData(),
       );
-      console.log(response, "response from AddPost");
       reset();
+      return response;
     } catch (err) {
-      console.log(err, "From AddPost");
+      throw err;
     }
   }
 
   const { mutate, isPending } = useGenericMutation(
     addPost,
     ["allPosts", "userPosts"],
-    "Post Added Successfully",
-    "Post Doesn't Posted",
+    "Post added successfully!",
+    "Failed to add post",
   );
 
   const removeImage = () => {
     setValue("image", null);
   };
 
-
-
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 sm:p-5 mb-4 w-full ">
-      <form onSubmit={handleSubmit(mutate)}>
-        {/* Header: user avatar + input field */}
-        <div className="flex items-start gap-3 mb-3">
-          <Link to={"/profile"}>
-          <img
-            src={userData?.photo}
-            alt={userData?.name}
-            className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0]"
-          />
+    <div className="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 p-4 sm:p-6 mb-6 w-full transition-all hover:shadow-md">
+      <form onSubmit={handleSubmit(mutate)} className="space-y-4">
+        {/* Input Section */}
+        <div className="flex gap-4">
+          <Link to={"/profile"} className="shrink-0">
+            <div className="relative group">
+              <img
+                src={userData?.photo}
+                alt={userData?.name}
+                className="w-12 h-12 rounded-2xl object-cover ring-2 ring-gray-50 group-hover:ring-blue-100 transition-all"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
           </Link>
 
           <div className="flex-1">
             <textarea
               {...register("body")}
-              rows="2"
-              placeholder="What's on your mind?"
-              className="w-full p-3 text-sm text-[#0B1733] bg-[#F7FAFF] border border-[#E2E8F0] rounded-xl resize-none focus:outline-none focus:border-[#0066FF] transition-colors"
+              rows="3"
+              placeholder={`What's on your mind, ${userData?.name?.split(" ")[0]}?`}
+              className="w-full p-0 text-lg text-gray-800 placeholder:text-gray-400 bg-transparent border-none resize-none focus:ring-0 focus:outline-none min-h-[80px]"
             />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-[#E2E8F0] my-3"></div>
-
-        {/* Image preview (commented as requested) */}
+        {/* Image Preview Area */}
         {imageValue && imageValue.length > 0 && (
-          <div className="relative mt-2 mb-3">
+          <div className="relative group animate-in zoom-in-95 duration-300">
             <img
               src={URL.createObjectURL(imageValue[0])}
               alt="Preview"
-              className="max-h-60 w-full rounded-lg object-cover border border-[#E2E8F0]"
+              className="max-h-[350px] w-full rounded-2xl object-cover border border-gray-100 shadow-sm"
             />
             <button
               type="button"
               onClick={removeImage}
-              className=" cursor-pointer absolute right-5 top-5 rounded-full bg-black/60 p-1 text-white backdrop-blur-sm hover:bg-black/80 transition-colors"
+              className="absolute top-3 right-3 p-1.5 bg-black/50 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-all scale-100 group-hover:scale-110"
             >
-              <TbXboxX />
+              <IoCloseCircle size={24} />
             </button>
           </div>
         )}
 
-        {/* Actions: icons + post button */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        {/* Action Bar */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+          <div className="flex items-center gap-1">
             <input
               type="file"
               accept="image/*"
@@ -112,19 +109,28 @@ export default function AddPost() {
             />
             <label
               htmlFor="postImage"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-[#61708A] hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer font-medium"
             >
-              <FaImage className="text-lg" />
-              <span className="text-sm font-medium">Photo</span>
+              <div className="p-2 bg-blue-100/50 rounded-lg text-blue-600">
+                <FaImage size={18} />
+              </div>
+              <span className="hidden sm:inline">Add Photo</span>
             </label>
           </div>
 
           <button
             type="submit"
             disabled={isPending || isFormEmpty}
-            className=" cursor-pointer px-5 py-2 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#00C2A8] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed!"
           >
-            {isPending ? "Posting..." : "Post"}
+            <span className={isPending ? "opacity-0" : "opacity-100"}>
+              Post
+            </span>
+            {isPending && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              </div>
+            )}
           </button>
         </div>
       </form>

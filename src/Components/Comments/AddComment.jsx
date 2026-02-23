@@ -2,13 +2,12 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { useForm } from "react-hook-form";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
-import { IoSendSharp } from "react-icons/io5";
+import { IoSend, IoImageOutline, IoCloseCircle } from "react-icons/io5";
 import { Oval } from "react-loader-spinner";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
-import { TbXboxX } from "react-icons/tb";
 
-export default function AddComment({postId}) {
+export default function AddComment({ postId }) {
   const { userData } = useContext(AuthContext);
   const { photo, name } = userData;
 
@@ -32,119 +31,108 @@ export default function AddComment({postId}) {
 
   async function addComment(values) {
     const formData = new FormData();
-    formData.append("content", values.content || "  ");
+    formData.append("content", values.content || " ");
     if (values.image && values.image[0]) {
       formData.append("image", values.image[0]);
     }
-    try {
-      const { data } = await axios.post(
-        `https://route-posts.routemisr.com/posts/${postId}/comments`,
-        formData,
-        headersObjData()
-      );
-      reset();
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
+    const { data } = await axios.post(
+      `https://route-posts.routemisr.com/posts/${postId}/comments`,
+      formData,
+      headersObjData(),
+    );
+    reset();
+    return data;
   }
 
   const { mutate, isPending } = useGenericMutation(
     addComment,
     ["comments", postId],
-    "Comment Added Successfully",
-    "Comment Doesn't Poste"
+    "Comment shared! 💬",
+    "Failed to send comment",
   );
 
   return (
-    <form className="flex items-start gap-2 sticky bottom-0 bg-white py-2" onSubmit={handleSubmit(mutate)}>
-      <img
-        alt={name}
-        className="h-9 w-9 rounded-full object-cover"
-        src={photo}
-      />
-      <div
-        className="w-full rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 focus-within:border-[#c7dafc] focus-within:bg-white"
-        data-comment-mention-root="true"
-      >
-        <textarea
-          {...register("content")}
-          placeholder={`Comment as ${name}...`}
-          rows={1}
-          className="max-h-[140px] min-h-[40px] w-full resize-none bg-transparent px-2 py-1.5 text-sm leading-5 outline-none placeholder:text-slate-500"
+    <div className="sticky bottom-0 bg-white/80 backdrop-blur-lg border-t border-gray-100 pt-3 pb-1">
+      <form className="flex items-end gap-3" onSubmit={handleSubmit(mutate)}>
+        {/* User Avatar */}
+        <img
+          alt={name}
+          className="h-9 w-9 rounded-xl object-cover shadow-sm ring-1 ring-gray-200 mb-1"
+          src={photo}
         />
 
-        <div className="mt-1 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <label
-              htmlFor="comment-image"
-              className="inline-flex cursor-pointer items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-emerald-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={16}
-                height={16}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-image"
-                aria-hidden="true"
-              >
-                <rect width={18} height={18} x={3} y={3} rx={2} ry={2} />
-                <circle cx={9} cy={9} r={2} />
-                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-              </svg>
-            </label>
-            <input
-              id="comment-image"
-              {...register("image")}
-              className="hidden"
-              type="file"
-              accept="image/*"
-            />
-          </div>
+        {/* Input Container */}
+        <div className="flex-1 bg-gray-100/50 rounded-[1.25rem] border border-transparent focus-within:border-blue-200 focus-within:bg-white focus-within:shadow-sm transition-all duration-200 overflow-hidden">
+          {/* Image Preview inside the box */}
+          {imageValue && imageValue.length > 0 && (
+            <div className="p-2 pb-0">
+              <div className="relative inline-block group">
+                <img
+                  src={URL.createObjectURL(imageValue[0])}
+                  alt="Preview"
+                  className="h-20 w-20 rounded-lg object-cover border border-gray-200 shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute -top-1.5 -right-1.5 bg-white text-red-500 rounded-full shadow-md hover:scale-110 transition-transform"
+                >
+                  <IoCloseCircle size={20} />
+                </button>
+              </div>
+            </div>
+          )}
 
-          <button
-            className="cursor-pointer flex h-9 w-9 items-center justify-center rounded-full bg-[#1877f2] text-white shadow-sm transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:bg-[#9ec5ff] disabled:opacity-100"
-            disabled={isPending || isFormEmpty}
-          >
-            {isPending ? (
-              <Oval
-                visible={true}
-                height={20}
-                width={20}
-                color="white"
-                secondaryColor="rgba(255,255,255,0.4)"
-                strokeWidth={4}
-                ariaLabel="oval-loading"
+          <div className="flex items-center px-3 py-1">
+            <textarea
+              {...register("content")}
+              placeholder={`Write a comment...`}
+              rows={1}
+              className="flex-1 max-h-32 min-h-[38px] w-full resize-none bg-transparent py-2.5 text-sm leading-tight outline-none placeholder:text-gray-400 text-gray-700"
+              onInput={(e) => {
+                e.target.style.height = "inherit";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+            />
+
+            {/* Image Upload Icon */}
+            <div className="flex items-center self-end mb-1.5">
+              <label
+                htmlFor="comment-image"
+                className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all cursor-pointer"
+              >
+                <IoImageOutline size={20} />
+              </label>
+              <input
+                id="comment-image"
+                {...register("image")}
+                className="hidden"
+                type="file"
+                accept="image/*"
               />
-            ) : (
-              <IoSendSharp />
-            )}
-          </button>
+            </div>
+          </div>
         </div>
 
-        {/* معاينة الصورة */}
-        {imageValue && imageValue.length > 0 && (
-          <div className="relative mt-2 mb-2">
-            <img
-              src={URL.createObjectURL(imageValue[0])}
-              alt="Preview"
-              className="max-h-40 w-full rounded-lg object-cover border border-[#E2E8F0]"
+        {/* Send Button */}
+        <button
+          className="mb-1 cursor-pointer flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-100 transition-all hover:bg-blue-700 active:scale-90 disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed"
+          disabled={isPending || isFormEmpty}
+        >
+          {isPending ? (
+            <Oval
+              visible={true}
+              height={18}
+              width={18}
+              color="currentColor"
+              secondaryColor="rgba(255,255,255,0.3)"
+              strokeWidth={5}
             />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="absolute right-2 top-2 rounded-full bg-black/60 p-1 text-white backdrop-blur-sm hover:bg-black/80 transition-colors cursor-pointer"
-            >
-              <TbXboxX size={16} />
-            </button>
-          </div>
-        )}
-      </div>
-    </form>
+          ) : (
+            <IoSend size={18} />
+          )}
+        </button>
+      </form>
+    </div>
   );
 }

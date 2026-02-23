@@ -5,6 +5,14 @@ import { registerationSchema } from "../../../Schema/AuthSchema";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
+import {
+  FaMale,
+  FaFemale,
+  FaUser,
+  FaAt,
+  FaCalendarAlt,
+  FaLock,
+} from "react-icons/fa";
 
 export default function Register() {
   const [msg, setMsg] = useState();
@@ -16,6 +24,7 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerationSchema),
@@ -29,6 +38,8 @@ export default function Register() {
       rePassword: "",
     },
   });
+
+  const selectedGender = watch("gender");
 
   async function submitRegister(values) {
     setLoading(true);
@@ -44,7 +55,8 @@ export default function Register() {
         navigate("/");
       }
     } catch (err) {
-      const serverError = err?.response?.data?.errors;
+      const serverError =
+        err?.response?.data?.errors || "Registration failed. Try again.";
       setMsg(serverError);
     } finally {
       setLoading(false);
@@ -52,364 +64,212 @@ export default function Register() {
   }
 
   return (
-    <>
-      <div className="rounded-2xl bg-white p-4 sm:p-6">
-        <h2 className="text-2xl font-extrabold text-[#0B1733]">
-          Create a new account
+    <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
+      <div className="text-center sm:text-start mb-8">
+        <h2 className="text-3xl font-black text-gray-900 tracking-tight">
+          Create Account
         </h2>
-        <p className="mt-1 text-sm text-[#61708A]">It is quick and easy.</p>
+        <p className="mt-2 text-sm font-medium text-gray-500">
+          Join our community today.
+        </p>
+      </div>
 
-        <form
-          onSubmit={handleSubmit(submitRegister)}
-          className="mt-5 space-y-3.5"
-        >
-          {/* Full name */}
-          <div>
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-user"
-                  aria-hidden="true"
-                >
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                  <circle cx={12} cy={7} r={4} />
-                </svg>
+      <form onSubmit={handleSubmit(submitRegister)} className="space-y-5">
+        {/* Row 1: Name & Username */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Full Name
+            </label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                <FaUser size={16} />
               </span>
               <input
                 {...register("name")}
-                placeholder="Full name"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-4 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
+                placeholder="John Doe"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm outline-none transition-all focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5"
                 type="text"
               />
             </div>
             {errors.name && (
-              <p className="mt-1 text-sm text-[#E23030]">
+              <p className="text-[11px] font-bold text-red-500 ml-1">
                 {errors.name.message}
               </p>
             )}
           </div>
 
-          {/* Username */}
-          <div className="w-full">
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-at-sign"
-                  aria-hidden="true"
-                >
-                  <circle cx={12} cy={12} r={4} />
-                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
-                </svg>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Username
+            </label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                <FaAt size={16} />
               </span>
               <input
                 {...register("username")}
-                placeholder="Username (optional)"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-4 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
+                placeholder="johndoe123"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm outline-none transition-all focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5"
                 type="text"
               />
             </div>
             {errors.username && (
-              <p className="mt-1 text-sm text-[#E23030]">
+              <p className="text-[11px] font-bold text-red-500 ml-1">
                 {errors.username.message}
               </p>
             )}
           </div>
+        </div>
 
-          {/* Email */}
-          <div className="w-full">
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-at-sign"
-                  aria-hidden="true"
-                >
-                  <circle cx={12} cy={12} r={4} />
-                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
-                </svg>
-              </span>
-              <input
-                {...register("email")}
-                placeholder="Email address"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-4 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
-                type="email"
-              />
-            </div>
-            {errors.email && (
-              <p className="mt-1 text-sm text-[#E23030]">
-                {errors.email.message}
-              </p>
-            )}
+        {/* Email */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+            Email Address
+          </label>
+          <div className="relative group">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+              <FaAt size={16} />
+            </span>
+            <input
+              {...register("email")}
+              placeholder="example@mail.com"
+              className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm outline-none transition-all focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5"
+              type="email"
+            />
           </div>
+          {errors.email && (
+            <p className="text-[11px] font-bold text-red-500 ml-1">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
 
-          {/* Date of birth */}
-          <div className="w-full">
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-calendar"
-                  aria-hidden="true"
-                >
-                  <path d="M8 2v4" />
-                  <path d="M16 2v4" />
-                  <rect width={18} height={18} x={3} y={4} rx={2} />
-                  <path d="M3 10h18" />
-                </svg>
+        {/* Date of Birth & Gender Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Date of Birth
+            </label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                <FaCalendarAlt size={16} />
               </span>
               <input
                 {...register("dateOfBirth")}
-                placeholder="Date of birth"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-4 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm outline-none transition-all focus:bg-white focus:border-blue-600"
                 type="date"
               />
             </div>
-            {errors.dateOfBirth && (
-              <p className="mt-1 text-sm text-[#E23030]">
-                {errors.dateOfBirth.message}
-              </p>
-            )}
           </div>
 
-          {/* Password */}
-          <div className="w-full">
-            <div className="relative">
-              <span className=" pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-key-round"
-                  aria-hidden="true"
-                >
-                  <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
-                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
-                </svg>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Gender
+            </label>
+            <div className="flex gap-3">
+              <label
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border cursor-pointer transition-all ${selectedGender === "male" ? "bg-blue-50 border-blue-600 text-blue-600 font-bold" : "bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100"}`}
+              >
+                <input
+                  type="radio"
+                  {...register("gender")}
+                  value="male"
+                  className="hidden"
+                />
+                <FaMale /> Male
+              </label>
+              <label
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border cursor-pointer transition-all ${selectedGender === "female" ? "bg-pink-50 border-pink-600 text-pink-600 font-bold" : "bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100"}`}
+              >
+                <input
+                  type="radio"
+                  {...register("gender")}
+                  value="female"
+                  className="hidden"
+                />
+                <FaFemale /> Female
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Passwords Row */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Password
+            </label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                <FaLock size={14} />
               </span>
               <input
                 {...register("password")}
-                placeholder="Password"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-12 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
                 type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-10 text-sm outline-none transition-all focus:bg-white focus:border-blue-600"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#61708A]/60 hover:text-[#00C2A8] focus:outline-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={18}
-                    height={18}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-eye-off"
-                  >
-                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                    <line x1="2" x2="22" y1="2" y2="22" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={18}
-                    height={18}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-eye"
-                  >
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {errors.password && (
-              <p className="mt-1 text-sm text-[#E23030]">
+              <p className="text-[11px] font-bold text-red-500 ml-1">
                 {errors.password.message}
               </p>
             )}
           </div>
 
-          {/* Repassword */}
-          <div className="w-full">
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#61708A]/60">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-key-round"
-                  aria-hidden="true"
-                >
-                  <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
-                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
-                </svg>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
+              Confirm Password
+            </label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                <FaLock size={14} />
               </span>
               <input
                 {...register("rePassword")}
-                placeholder="Confirm password"
-                className="w-full rounded-xl border bg-[#F7FAFF] py-3 pl-11 pr-12 text-sm text-[#0B1733] outline-none transition focus:bg-white border-[#E2E8F0] focus:border-[#0066FF]"
                 type={showConfirmPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-10 text-sm outline-none transition-all focus:bg-white focus:border-blue-600"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#61708A]/60 hover:text-[#00C2A8] focus:outline-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showConfirmPassword ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={18}
-                    height={18}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-eye-off"
-                  >
-                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                    <line x1="2" x2="22" y1="2" y2="22" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={18}
-                    height={18}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-eye"
-                  >
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
+                {showConfirmPassword ? "Hide" : "Show"}
               </button>
             </div>
             {errors.rePassword && (
-              <p className="mt-1 text-sm text-[#E23030]">
+              <p className="text-[11px] font-bold text-red-500 ml-1">
                 {errors.rePassword.message}
               </p>
             )}
           </div>
+        </div>
 
-          {/* Gender */}
-          <div className="flex gap-x-5">
-            <div className="flex items-center gap-x-3">
-              <input
-                type="radio"
-                {...register("gender")}
-                id="male"
-                value={"male"}
-                defaultChecked
-              />
-              <label htmlFor="gender" className="text-[#0B1733]">
-                male
-              </label>
-            </div>
-            <div className="flex items-center gap-x-3">
-              <input
-                type="radio"
-                {...register("gender")}
-                id="female"
-                value={"female"}
-              />
-              <label htmlFor="gender" className="text-[#0B1733]">
-                female
-              </label>
-            </div>
-            {errors.gender && (
-              <p className="mt-1 text-sm text-[#E23030]">
-                {errors.gender.message}
-              </p>
-            )}
-          </div>
+        {/* Register button */}
+        <button
+          className="w-full mt-4 rounded-2xl bg-blue-600 py-4 text-sm font-bold text-white transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/30 active:scale-[0.98] disabled:opacity-70"
+          disabled={loading}
+        >
+          {loading ? "Creating your account..." : "Get Started Now"}
+        </button>
 
-          {/* Register button */}
-          <button
-            className="cursor-pointer w-full rounded-xl bg-[#0066FF] py-3 text-base font-extrabold text-white transition hover:bg-[#00C2A8] disabled:opacity-60"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span>Please wait...</span>
-              </>
-            ) : (
-              <span>Create account</span>
-            )}
-          </button>
-          {msg && (
-            <AuthAlert
-              type={msg === "success" ? "success" : "error"}
-              message={msg}
-            />
-          )}
-        </form>
-      </div>
-    </>
+        {msg && (
+          <AuthAlert
+            type={msg === "success" ? "success" : "error"}
+            message={msg}
+          />
+        )}
+      </form>
+    </div>
   );
 }

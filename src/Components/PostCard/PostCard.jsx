@@ -49,8 +49,6 @@ export default function PostCard({ post, isDetailes = false }) {
     commentsCount,
   } = post;
 
-  console.log(likes, "likes");
-
   const { name: userName, photo: UserPhoto, _id: userId } = post?.user;
 
   const formatedPostDate = createdAt
@@ -125,20 +123,26 @@ export default function PostCard({ post, isDetailes = false }) {
   const isLiked = likes?.some((id) => id === userData?.id);
 
   return (
-    <article className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 sm:p-5 mb-4 transition hover:shadow-md w-full mx-auto">
-      {/* Header: user info + timestamp */}
-      <div className="p-3">
+    <article className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-5 transition-shadow hover:shadow-md w-full mx-auto overflow-hidden">
+      <div className="p-4 sm:p-5">
+        {/* Header: user info + timestamp */}
         <div className={`flex items-start justify-between mb-3`}>
           <div className="flex items-center gap-3">
             {/* User avatar */}
-            <img
-              src={UserPhoto}
-              alt={userName}
-              className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0]"
-            />
+            <div className="relative">
+              <img
+                src={UserPhoto}
+                alt={userName}
+                className="w-11 h-11 rounded-full object-cover border border-gray-100 shadow-sm"
+              />
+            </div>
             <div>
-              <h3 className="font-semibold text-[#0B1733]">{userName}</h3>
-              <p className="text-xs text-[#61708A]">{formatedPostDate}</p>
+              <h3 className="text-[15px] font-bold text-gray-900 leading-none">
+                {userName}
+              </h3>
+              <p className="text-[13px] text-gray-500 mt-1 hover:underline cursor-pointer">
+                {formatedPostDate}
+              </p>
             </div>
           </div>
 
@@ -146,14 +150,14 @@ export default function PostCard({ post, isDetailes = false }) {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-full p-1.5 text-[#61708A] hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors"
+              className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors focus:outline-none"
               aria-haspopup="true"
               aria-expanded={menuOpen}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -170,12 +174,12 @@ export default function PostCard({ post, isDetailes = false }) {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white  shadow-lg">
-                <button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-[#0B1733] hover:bg-[#F7FAFF] transition-colors">
+              <div className="absolute right-0 z-20 mt-1 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg py-1">
+                <button className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="15"
-                    height="15"
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -193,16 +197,17 @@ export default function PostCard({ post, isDetailes = false }) {
                   <>
                     <button
                       onClick={handleCommentUpdateBtn}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-yellow-500 hover:bg-yellow-50 transition-colors"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                     >
-                      <MdModeEdit size={15} />
+                      <MdModeEdit size={16} className="text-gray-500" />
                       Update Post
                     </button>
+                    <div className="h-[1px] bg-gray-100 my-1 w-full"></div>
                     <button
                       onClick={deleteMutate}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
                     >
-                      <MdDeleteOutline size={15} />
+                      <MdDeleteOutline size={16} />
                       {deleteIsPending ? "Deleting..." : "Delete Post"}
                     </button>
                   </>
@@ -214,144 +219,151 @@ export default function PostCard({ post, isDetailes = false }) {
 
         {/* Post content */}
         <p
-          className={`text-[#0B1733] mb-3 overflow-hidden w-full wrap-break-word ${!!showUpdateInput && "hidden"}`}
+          className={`text-gray-800 text-[15px] leading-relaxed mb-3 whitespace-pre-wrap wrap-break-word ${!!showUpdateInput && "hidden"}`}
         >
           {body}
         </p>
+
         <form
           onSubmit={handleSubmit(updateMutate)}
-          className={`mt-3  ${!showUpdateInput && "hidden"}`}
+          className={`mt-3 mb-3 ${!showUpdateInput && "hidden"}`}
         >
           <textarea
             maxLength={5000}
-            className="min-h-[110px] w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-[#1877f2]/20 focus:border-[#1877f2] focus:ring-2"
+            className="min-h-[120px] w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] outline-none transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-y"
             {...register("body")}
           />
-          <div className="mt-2 flex items-center justify-end gap-2">
+          <div className="mt-3 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => {
                 setShowUpdateInput(false);
                 reset();
               }}
-              className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
+              className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-full bg-[#1877f2] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#166fe5] disabled:opacity-60"
+              className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60 transition-colors"
             >
-              {updateIsPending ? "Saving..." : "Save"}
+              {updateIsPending ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
+
+        {/* Post image */}
+        {postPhoto && (
+          <div
+            onClick={openImagePreview}
+            className="cursor-pointer rounded-xl overflow-hidden mt-3 mb-4 border border-gray-100 bg-gray-50"
+          >
+            <img
+              src={postPhoto}
+              alt={body || "post image"}
+              className="w-full max-h-[500px] object-cover hover:opacity-95 transition-opacity"
+            />
+          </div>
+        )}
+
+        {/* Stats (likes, comments, shares) */}
+        <div className="flex items-center justify-between text-[13px] text-gray-500 py-3 border-b border-gray-100">
+          <div className="flex items-center gap-1.5 cursor-pointer hover:underline">
+            <div className="bg-blue-600 p-1 rounded-full text-white">
+              <AiFillLike size={10} />
+            </div>
+            <span>{likes.length}</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button onClick={openComments} className="cursor-pointer hover:underline">
+              {commentsCount} comments
+            </button>
+            <span className="cursor-pointer hover:underline flex items-center gap-1">
+              {sharesCount} shares
+            </span>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex items-center justify-between gap-1 pt-2">
+          {/* Like button */}
+          <button
+            disabled={likePostIsPending}
+            onClick={() => likePostMutate()}
+            className={`flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg font-medium text-[14px] transition-colors ${
+              isLiked
+                ? "text-blue-600 bg-blue-50/50 hover:bg-blue-100"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            {isLiked ? (
+              <AiFillLike className="text-xl" />
+            ) : (
+              <AiOutlineLike className="text-xl text-gray-500" />
+            )}
+            <span>{likePostIsPending ? "Liking..." : "Like"}</span>
+          </button>
+
+          {/* Comment button */}
+          <button
+            onClick={openComments}
+            className="flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg text-gray-600 font-medium text-[14px] hover:bg-gray-100 transition-colors"
+          >
+            <FaRegComment className="text-[18px] text-gray-500" />
+            <span>Comment</span>
+          </button>
+
+          {/* Share button */}
+          <button className="flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg text-gray-600 font-medium text-[14px] hover:bg-gray-100 transition-colors">
+            <FaShare className="text-[18px] text-gray-500" />
+            <span>Share</span>
+          </button>
+        </div>
       </div>
 
-      {/* Post image */}
-      {postPhoto && (
-        <div
-          onClick={openImagePreview}
-          className=" cursor-pointer max-h-155 rounded-xl overflow-hidden mb-3 border border-[#E2E8F0]"
-        >
-          <img
-            src={postPhoto}
-            alt={body || "post image"}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      )}
-
-      {/*//! (likes, comments) */}
-      <div className="flex items-center justify-between text-sm text-[#61708A] border-t border-[#E2E8F0] pt-3 mt-2">
-        <span className="flex items-center gap-2">
-          {" "}
-          <AiFillLike className="text-blue-600" /> {likes.length} likes{" "}
-        </span>
-        <div className="flex gap-x-5">
-          <span className="flex items-center gap-x-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-repeat2 lucide-repeat-2"
-              aria-hidden="true"
-            >
-              <path d="m2 9 3-3 3 3"></path>
-              <path d="M13 18H7a2 2 0 0 1-2-2V6"></path>
-              <path d="m22 15-3 3-3-3"></path>
-              <path d="M11 6h6a2 2 0 0 1 2 2v10"></path>
-            </svg>
-            {"  "}
-            {sharesCount} shares
-          </span>
-          <span>{commentsCount} comments</span>
-          {!isDetailes && (
+      {/* Footer / Comments section */}
+      <div className="px-4 sm:px-5 pb-3">
+        {!isDetailes && (
+          <div className="mt-2 flex justify-center">
             <Link
               to={`/detailes/${postId}`}
-              className="text-[#0066FF] text-xs font-bold cursor-pointer hover:text-[#00C2A8] transition-colors"
+              className="text-blue-600 text-sm font-medium hover:underline"
             >
-              view detailes
+              View detailed post
             </Link>
-          )}
-        </div>
+          </div>
+        )}
+
+        {!isDetailes && topComment && (
+          <div className="mt-3">
+            <CommentCard
+              comment={topComment}
+              post={post}
+              onOpenComments={openComments}
+            />
+          </div>
+        )}
+
+        {isDetailes && commentsIsLoading && (
+          <div className="mt-4">
+            <LoadingComments />
+          </div>
+        )}
+
+        {commentsIsFetched && isDetailes && postComments && (
+          <div className="mt-4 border-t border-gray-100 pt-4">
+            <CommenCard comment={postComments} isDetailes={true} post={post} />
+          </div>
+        )}
       </div>
 
-      {/* Action buttons (static, no logic) */}
-      <div className="flex items-center justify-around mt-2 py-2">
-        {/* Like button */}
-        <div
-          onClick={() => likePostMutate()}
-          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full ${!!isLiked && "bg-blue-50"} `}
-        >
-          {isLiked ? (
-            <AiFillLike className="text-blue-600" />
-          ) : (
-            <AiOutlineLike className="text-lg" />
-          )}
-
-          <span>Like</span>
-        </div>
-
-        {/* Comment button */}
-        <button
-          onClick={openComments}
-          className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full"
-        >
-          <FaRegComment className="text-lg" />
-          <span>Comment</span>
-        </button>
-
-        {/* Share button */}
-        <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[#61708A] cursor-pointer hover:bg-[#F7FAFF] hover:text-[#0B1733] transition-colors w-full">
-          <FaShare className="text-lg" />
-          <span>Share</span>
-        </div>
-      </div>
-      {!isDetailes && topComment && (
-        <CommentCard
-          comment={topComment}
-          post={post}
-          onOpenComments={openComments}
-        />
-      )}
-      {isDetailes && commentsIsLoading && <LoadingComments />}
-      {commentsIsFetched && isDetailes && postComments && (
-        <CommenCard comment={postComments} isDetailes={true} post={post} />
-      )}
-
-      {/* //! Image Prevew */}
+      {/* Modals */}
       {isImagePreviewOpen && (
         <ImagePreview image={postPhoto} onClose={closeImagePreview} />
       )}
 
-      {/* Comments preview modal */}
       {isCommentsOpen && (
         <AllComments
           comments={postComments}

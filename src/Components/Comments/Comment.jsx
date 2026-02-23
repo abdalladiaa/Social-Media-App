@@ -7,6 +7,7 @@ import { headersObjData } from "../../Helper/HeadersObj";
 import { AuthContext } from "../../Context/AuthContext";
 import { MdModeEdit } from "react-icons/md";
 import { useForm } from "react-hook-form";
+import { IoPencilOutline, IoTrashOutline } from "react-icons/io5";
 
 export default function Comment({ comment, post }) {
   const { userData } = useContext(AuthContext);
@@ -179,24 +180,24 @@ export default function Comment({ comment, post }) {
                 {menuOpen && (
                   <div
                     ref={menuRef}
-                    className="absolute right-0 z-10 w-32 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white py-1 shadow-lg"
+                    className="absolute right-0 bottom-full mb-2 z-20 w-36 overflow-hidden rounded-xl border border-gray-100 bg-white/90 backdrop-blur-xl p-1 shadow-xl animate-in fade-in zoom-in-95 duration-200"
                   >
-                    <button
-                      onClick={deleteMutate}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-[#F7FAFF] transition-colors font-semibold"
-                    >
-                      <FaTrash size={14} />
-                      {deleteIsPending ? "Deleting..." : "Delete"}
-                    </button>
                     {comment.commentCreator._id === userData.id && (
                       <button
                         onClick={handleCommentUpdateBtn}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm  text-yellow-500 hover:bg-[#F7FAFF] transition-colors font-semibold"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all"
                       >
-                        <MdModeEdit size={14} />
-                        Update
+                        <IoPencilOutline size={16} />
+                        Edit
                       </button>
                     )}
+                    <button
+                      onClick={deleteMutate}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    >
+                      <IoTrashOutline size={16} />
+                      {deleteIsPending ? "Deleting..." : "Delete"}
+                    </button>
                   </div>
                 )}
               </div>
