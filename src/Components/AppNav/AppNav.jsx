@@ -30,7 +30,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // تنسيق الروابط الموحد مع استجابة ذكية للموبايل
+
   const navLinkStyling = ({ isActive }) =>
     `relative flex items-center justify-center gap-2 rounded-xl px-3 py-2 md:px-4 md:py-2 text-sm font-bold transition-all duration-300 ${
       isActive
@@ -39,16 +39,16 @@ export default function Navbar() {
     }`;
 
   return (
-    <nav className="flex items-center justify-between px-3 md:px-10 py-3 bg-white/95 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-[50]">
+    <nav className="flex items-center justify-between px-3 md:px-10 py-3 bg-white/85 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
       
-      {/* Logo - يصغر قليلاً في الموبايل */}
+
       <div className="flex shrink-0">
         <Link to="/" className="text-lg md:text-2xl font-black tracking-tighter text-blue-600">
           <span>Social App</span>
         </Link>
       </div>
 
-      {/* Central Navigation - متواجد دائماً في الأعلى */}
+
       <div className="flex items-center gap-0.5 md:gap-1 p-1 bg-gray-50/50 rounded-2xl border border-gray-100 mx-2">
         <NavLink className={navLinkStyling} to="/">
           <IoHomeOutline size={20} />
@@ -70,7 +70,7 @@ export default function Navbar() {
         </NavLink>
       </div>
 
-      {/* User Area */}
+
       <div className="relative shrink-0" ref={dropdownRef}>
         <button
           onClick={toggleMenu}
@@ -83,7 +83,7 @@ export default function Navbar() {
               alt="user"
             />
           </div>
-          {/* اسم المستخدم يختفي في الشاشات الصغيرة جداً */}
+
           <span className="hidden md:inline font-bold text-sm text-gray-700">
             {userData?.name?.split(" ")[0]}
           </span>

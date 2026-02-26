@@ -6,7 +6,7 @@ export default function ImagePreview({ image, onClose }) {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
     };
-    // منع التمرير في الخلفية عند فتح الصورة
+
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
@@ -32,7 +32,7 @@ export default function ImagePreview({ image, onClose }) {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-in fade-in duration-300"
       onClick={handleBackdropClick}
     >
-      {/* الأزرار العلوية */}
+
       <div className="absolute top-6 right-6 flex gap-3 z-[110]">
         <button
           onClick={onClose}
@@ -43,7 +43,7 @@ export default function ImagePreview({ image, onClose }) {
         </button>
       </div>
 
-      {/* حاوية الصورة مع أنيميشن */}
+
       <div className="relative max-w-[95vw] max-h-[95vh] p-2 sm:p-4 flex items-center justify-center animate-in zoom-in-95 duration-300 ease-out">
         <img
           src={image}

@@ -75,7 +75,7 @@ export default function Register() {
       </div>
 
       <form onSubmit={handleSubmit(submitRegister)} className="space-y-5">
-        {/* Row 1: Name & Username */}
+        {/* Name & Username */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
@@ -145,7 +145,7 @@ export default function Register() {
           )}
         </div>
 
-        {/* Date of Birth & Gender Row */}
+        {/* Date of Birth & Gender */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">
@@ -194,7 +194,7 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Passwords Row */}
+        {/* Passwords */}
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">

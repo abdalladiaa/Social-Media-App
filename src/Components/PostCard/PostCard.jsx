@@ -125,7 +125,7 @@ export default function PostCard({ post, isDetailes = false }) {
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-5 transition-shadow hover:shadow-md w-full mx-auto overflow-hidden">
       <div className="p-4 sm:p-5">
-        {/* Header: user info + timestamp */}
+
         <div className={`flex items-start justify-between mb-3`}>
           <div className="flex items-center gap-3">
             {/* User avatar */}
@@ -140,7 +140,7 @@ export default function PostCard({ post, isDetailes = false }) {
               <h3 className="text-[15px] font-bold text-gray-900 leading-none">
                 {userName}
               </h3>
-              <p className="text-[13px] text-gray-500 mt-1 hover:underline cursor-pointer">
+              <p className="text-[13px] text-gray-500 mt-1">
                 {formatedPostDate}
               </p>
             </div>
@@ -202,7 +202,7 @@ export default function PostCard({ post, isDetailes = false }) {
                       <MdModeEdit size={16} className="text-gray-500" />
                       Update Post
                     </button>
-                    <div className="h-[1px] bg-gray-100 my-1 w-full"></div>
+                    <div className="h-px bg-gray-100 my-1 w-full"></div>
                     <button
                       onClick={deleteMutate}
                       className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
@@ -230,7 +230,7 @@ export default function PostCard({ post, isDetailes = false }) {
         >
           <textarea
             maxLength={5000}
-            className="min-h-[120px] w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] outline-none transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-y"
+            className="min-h-30 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] outline-none transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-y"
             {...register("body")}
           />
           <div className="mt-3 flex items-center justify-end gap-2">
@@ -262,12 +262,12 @@ export default function PostCard({ post, isDetailes = false }) {
             <img
               src={postPhoto}
               alt={body || "post image"}
-              className="w-full max-h-[500px] object-cover hover:opacity-95 transition-opacity"
+              className="w-full max-h-125 object-cover hover:opacity-95 transition-opacity"
             />
           </div>
         )}
 
-        {/* Stats (likes, comments, shares) */}
+        {/* likes, comments, shares */}
         <div className="flex items-center justify-between text-[13px] text-gray-500 py-3 border-b border-gray-100">
           <div className="flex items-center gap-1.5 cursor-pointer hover:underline">
             <div className="bg-blue-600 p-1 rounded-full text-white">
@@ -277,7 +277,10 @@ export default function PostCard({ post, isDetailes = false }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <button onClick={openComments} className="cursor-pointer hover:underline">
+            <button
+              onClick={openComments}
+              className="cursor-pointer hover:underline"
+            >
               {commentsCount} comments
             </button>
             <span className="cursor-pointer hover:underline flex items-center gap-1">
@@ -323,7 +326,7 @@ export default function PostCard({ post, isDetailes = false }) {
         </div>
       </div>
 
-      {/* Footer / Comments section */}
+
       <div className="px-4 sm:px-5 pb-3">
         {!isDetailes && (
           <div className="mt-2 flex justify-center">

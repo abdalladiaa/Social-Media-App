@@ -10,15 +10,15 @@ export default function CommentCard({
   post,
   onOpenComments,
 }) {
-  // التحقق من وجود بيانات للتعليق
+
   const hasComments = Array.isArray(comment) ? comment.length > 0 : !!comment;
 
-  // استخراج الـ ID الصحيح للمنشور لتمريره لصندوق التعليقات
+
   const postIdForAdd = post?._id || post?.id || comment?.post;
 
   return (
     <div className="mx-2 mb-3 overflow-hidden rounded-2xl border border-gray-100 bg-gray-50/40 p-3 transition-all hover:bg-gray-50/80">
-      {/* شارة التوب كومنت - ستايل احترافي */}
+
       {!isDetailes && hasComments && (
         <div className="flex items-center gap-1.5 mb-3">
           <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -28,19 +28,19 @@ export default function CommentCard({
         </div>
       )}
 
-      {/* عرض التعليق الفردي في الـ Feed */}
+
       {!isDetailes && comment && (
         <div className="group relative">
           <Comment comment={comment} post={post} />
         </div>
       )}
 
-      {/* عرض قائمة التعليقات كاملة في صفحة التفاصيل فقط */}
+
       {isDetailes && (
         <div className="space-y-4">
-          {Array.isArray(comment) && comment.length > 0 ? (
-            comment.map((item) => (
-              <Comment key={item._id} comment={item} post={post} />
+          { comment.length > 0 ? (
+            comment.map((comment) => (
+              <Comment key={comment._id} comment={comment} post={post} />
             ))
           ) : (
             <p className="text-center py-4 text-xs text-gray-400 font-medium">
@@ -54,7 +54,7 @@ export default function CommentCard({
         </div>
       )}
 
-      {/* زر "عرض الكل" - يظهر فقط في الـ Feed */}
+
       {!isDetailes && (
         <div className="mt-3 pt-2 border-t border-gray-200/50">
           {onOpenComments ? (

@@ -11,7 +11,7 @@ export default function AllComments({
   isLoading = false,
   post,
 }) {
-  // قفل التمرير في الخلفية
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -49,7 +49,7 @@ export default function AllComments({
           </button>
         </div>
 
-        {/* قائمة التعليقات - قابلة للتمرير */}
+
         <div className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar bg-gray-50/30">
           {isLoading ? (
             <LoadingComments />
@@ -74,7 +74,7 @@ export default function AllComments({
           )}
         </div>
 
-        {/* Footer: إضافة تعليق - ثابت في الأسفل */}
+
         <div className="p-4 bg-white border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
           <AddComment postId={post?._id} />
         </div>

@@ -16,14 +16,14 @@ export default function Posts() {
 
   return (
     <div className="max-w-2xl mx-auto py-6 px-4 pb-20 md:pb-6">
-      {/* منطقة كتابة المنشور */}
+
       <section className="mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
         <AddPost />
       </section>
 
-      {/* قائمة المنشورات */}
+
       <div className="space-y-6">
-        {/* حالة التحميل الأولية */}
+
         {isLoading && (
           <div className="space-y-6">
             <LoadingCard />
@@ -32,7 +32,7 @@ export default function Posts() {
           </div>
         )}
 
-        {/* عرض المنشورات بعد الجلب */}
+
         {isFetched &&
           data?.data?.posts?.map((post) => <PostCard post={post} />)}
       </div>

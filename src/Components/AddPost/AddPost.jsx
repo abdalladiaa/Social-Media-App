@@ -121,7 +121,7 @@ export default function AddPost() {
           <button
             type="submit"
             disabled={isPending || isFormEmpty}
-            className="relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed!"
+            className="relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           >
             <span className={isPending ? "opacity-0" : "opacity-100"}>
               Post
