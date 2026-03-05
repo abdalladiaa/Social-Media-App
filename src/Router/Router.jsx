@@ -10,6 +10,7 @@ import PostsGuard from "../Guards/PostsGuard";
 import AuthGuard from "../Guards/AuthGuard";
 import PostDetailes from "../Pages/PostDetailes/PostDetailes";
 import Notifications from "../Pages/Notifications/Notifications";
+import Settings from "../Pages/Settings/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -41,13 +42,29 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path:"detailes/:postId",
-        element: <PostsGuard><PostDetailes/></PostsGuard>
+        path: "detailes/:postId",
+        element: (
+          <PostsGuard>
+            <PostDetailes />
+          </PostsGuard>
+        ),
       },
       {
-        path:"notifications",
-        element: <PostsGuard><Notifications/></PostsGuard>
-      }
+        path: "notifications",
+        element: (
+          <PostsGuard>
+            <Notifications />
+          </PostsGuard>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <PostsGuard>
+            <Settings />
+          </PostsGuard>
+        ),
+      },
     ],
   },
 ]);

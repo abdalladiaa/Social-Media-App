@@ -3,7 +3,6 @@ import { FaRegHeart, FaRegComment, FaShare } from "react-icons/fa";
 import { formatDistanceToNow } from "date-fns";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
 import { AuthContext } from "../../Context/AuthContext";
-import { deletePostFunc } from "./deletePostFunc";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import CommenCard from "../Comments/CommentCard";
 import { Link } from "react-router-dom";
@@ -16,7 +15,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
 import AllComments from "../Comments/AllComments";
-import { likePostFunc } from "./LikePostFunc";
+
+import { deletePostFunc } from "./PostCardFunctions/deletePostFunc";
+import { likePostFunc } from "./PostCardFunctions/LikePostFunc";
 
 export default function PostCard({ post, isDetailes = false }) {
   const [menuOpen, setMenuOpen] = useState(false);

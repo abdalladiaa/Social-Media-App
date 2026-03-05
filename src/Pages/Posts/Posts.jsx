@@ -13,6 +13,7 @@ export default function Posts() {
     true,
     `posts?limit=${postsPagination}`,
   );
+console.log();
 
   return (
     <div className="max-w-2xl mx-auto py-6 px-4 pb-20 md:pb-6">
@@ -34,7 +35,7 @@ export default function Posts() {
 
 
         {isFetched &&
-          data?.data?.posts?.map((post) => <PostCard post={post} />)}
+          data?.data?.posts?.map((post) => <PostCard key={post._id} post={post} />)}
       </div>
 
       {isFetched && data?.data?.posts?.length >= postsPagination && (

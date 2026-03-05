@@ -5,6 +5,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { CiMenuBurger } from "react-icons/ci";
 import { IoHomeOutline } from "react-icons/io5";
+import { FaGear } from "react-icons/fa6";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +31,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const navLinkStyling = ({ isActive }) =>
     `relative flex items-center justify-center gap-2 rounded-xl px-3 py-2 md:px-4 md:py-2 text-sm font-bold transition-all duration-300 ${
       isActive
@@ -40,14 +40,14 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between px-3 md:px-10 py-3 bg-white/85 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
-      
-
       <div className="flex shrink-0">
-        <Link to="/" className="text-lg md:text-2xl font-black tracking-tighter text-blue-600">
+        <Link
+          to="/"
+          className="text-lg md:text-2xl font-black tracking-tighter text-blue-600"
+        >
           <span>Social App</span>
         </Link>
       </div>
-
 
       <div className="flex items-center gap-0.5 md:gap-1 p-1 bg-gray-50/50 rounded-2xl border border-gray-100 mx-2">
         <NavLink className={navLinkStyling} to="/">
@@ -70,7 +70,6 @@ export default function Navbar() {
         </NavLink>
       </div>
 
-
       <div className="relative shrink-0" ref={dropdownRef}>
         <button
           onClick={toggleMenu}
@@ -78,7 +77,10 @@ export default function Navbar() {
         >
           <div className="relative">
             <img
-              src={userData?.photo || "https://via.placeholder.com/150"}
+              src={
+                userData?.photo ||
+                "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
+              }
               className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-gray-100"
               alt="user"
             />
@@ -94,13 +96,31 @@ export default function Navbar() {
         {menuOpen && (
           <div className="absolute right-0 mt-3 w-52 md:w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-[110] animate-in fade-in zoom-in duration-200">
             <div className="px-4 py-3 border-b border-gray-50 mb-1">
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Account</p>
-              <p className="text-sm font-bold text-gray-800 truncate">{userData?.email}</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                Account
+              </p>
+              <p className="text-sm font-bold text-gray-800 truncate">
+                {userData?.email}
+              </p>
             </div>
-            <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50">
+            <Link
+              to="/profile"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+            >
               <FaUser size={14} className="text-gray-400" /> Profile
             </Link>
-            <button onClick={signout} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 w-full text-left">
+            <Link
+              to="/settings"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+            >
+              <FaGear size={14} className="text-gray-400" /> Settings
+            </Link>
+            <button
+              onClick={signout}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 w-full text-left"
+            >
               <FaSignOutAlt size={14} /> Logout
             </button>
           </div>

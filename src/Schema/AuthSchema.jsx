@@ -54,3 +54,22 @@ export const LoginSchema = z.object({
       "Incorrect password format. Password must be at least 6 characters with at least one uppercase letter, one lowercase letter, and one number",
     ),
 });
+
+//!  ======================================== Change Password ==================================
+
+export const ChangePasswordSchema = z.object({
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .regex(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/,
+      "Password must be at least 6 characters and include at least one uppercase letter, one lowercase letter, and one number",
+    ),
+  newPassword: z
+    .string()
+    .min(1, "Password is required")
+    .regex(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/,
+      "Password must be at least 6 characters and include at least one uppercase letter, one lowercase letter, and one number",
+    ),
+});

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { headersObjData } from "../../Helper/HeadersObj";
+import { headersObjData } from "../../../Helper/HeadersObj";
 
 export async function likePostFunc(postId) {
   try {
