@@ -13,7 +13,7 @@ export default function NotificationItem({notification}) {
 
       <div className="relative shrink-0">
         <Link
-          to="/profile"
+          to={`/profile/${actorId}`}
           className="block transition-transform active:scale-90"
         >
           <img
@@ -30,7 +30,7 @@ export default function NotificationItem({notification}) {
         <div className="flex items-start justify-between gap-2">
           <div className="text-sm leading-relaxed text-gray-800">
             <Link
-              to="/profile"
+              to={`/profile/${actorId}`}
               className="font-black text-gray-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 transition-colors"
             >
               {name}

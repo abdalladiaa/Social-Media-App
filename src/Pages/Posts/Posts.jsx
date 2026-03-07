@@ -13,18 +13,14 @@ export default function Posts() {
     true,
     `posts?limit=${postsPagination}`,
   );
-console.log();
 
   return (
-    <div className="max-w-2xl mx-auto py-6 px-4 pb-20 md:pb-6">
-
+    <div className="max-w-2xl mx-auto py-6 px-2 pb-20 md:pb-6">
       <section className="mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
         <AddPost />
       </section>
 
-
       <div className="space-y-6">
-
         {isLoading && (
           <div className="space-y-6">
             <LoadingCard />
@@ -33,9 +29,10 @@ console.log();
           </div>
         )}
 
-
         {isFetched &&
-          data?.data?.posts?.map((post) => <PostCard key={post._id} post={post} />)}
+          data?.data?.posts?.map((post) => (
+            <PostCard key={post._id} post={post} />
+          ))}
       </div>
 
       {isFetched && data?.data?.posts?.length >= postsPagination && (

@@ -2,15 +2,14 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import Posts from "../Pages/Posts/Posts";
-import Profile from "../Pages/Profile/Profile";
-import Register from "../Pages/AuthPage/Register/Register";
-import Login from "../Pages/AuthPage/Login/Login";
 import AuthPage from "../Pages/AuthPage/AuthPage";
 import PostsGuard from "../Guards/PostsGuard";
 import AuthGuard from "../Guards/AuthGuard";
 import PostDetailes from "../Pages/PostDetailes/PostDetailes";
 import Notifications from "../Pages/Notifications/Notifications";
 import Settings from "../Pages/Settings/Settings";
+import MyProfile from "../Pages/MyProfile/MyProfile";
+import PublicProfile from "../Pages/PublicProfile/PublicProfile";
 
 export const router = createBrowserRouter([
   {
@@ -37,9 +36,13 @@ export const router = createBrowserRouter([
         path: "profile",
         element: (
           <PostsGuard>
-            <Profile />
+            <MyProfile />
           </PostsGuard>
         ),
+      },
+      {
+        path:"profile/:userId",
+        element:<PostsGuard><PublicProfile/></PostsGuard>
       },
       {
         path: "detailes/:postId",

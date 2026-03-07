@@ -4,9 +4,10 @@ import { AuthContext } from "../../Context/AuthContext";
 import PostCard from "../../Components/PostCard/PostCard";
 import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import AddPost from "../../Components/AddPost/AddPost";
-import ProfileDetailesCard from "../../Components/ProfileDetailesCard/ProfileDetailesCard";
+import MyProfileDetailesCard from "../../Components/ProfileDetailesCard/MyProfileDetailesCard";
 
-export default function Profile() {
+
+export default function MyProfile() {
   const { userData } = useContext(AuthContext);
   const { data, isLoading, isFetching, isFetched, isError } = usePosts(
     ["userPosts"],
@@ -18,7 +19,7 @@ export default function Profile() {
 
   return (
     <>
-      <ProfileDetailesCard userData={userData} posts ={posts} />
+      <MyProfileDetailesCard userData={userData} posts ={posts} />
       <AddPost />
       {(isLoading || Boolean(userData?._id) == false) && <LoadingCard />}
       {isFetched &&

@@ -11,9 +11,9 @@ import { MdPostAdd } from "react-icons/md";
 import { headersObjData } from "../../Helper/HeadersObj";
 import { useForm } from "react-hook-form";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
-import { useQuery } from "@tanstack/react-query";
 
-export default function ProfileDetailsCard({ userData, posts }) {
+
+export default function MyProfileDetailesCard({ userData, posts }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
