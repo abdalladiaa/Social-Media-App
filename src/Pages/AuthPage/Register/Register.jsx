@@ -64,7 +64,7 @@ export default function Register() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
+    <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-10   ">
       <div className="text-center sm:text-start mb-8">
         <h2 className="text-3xl font-black text-gray-900 tracking-tight">
           Create Account

@@ -11,9 +11,8 @@ export function useGenericMutation(
   const mutation = useMutation({
     mutationFn: mutationFunc,
     onSuccess: () => {
-      queryKeysToInvalidate.forEach((key) =>
-        queryClient.invalidateQueries([key]),
-      );
+
+      queryKeysToInvalidate.forEach((key) => queryClient.invalidateQueries(key));
       !!successMsg && toast.success(successMsg);
     },
     onError: () => {

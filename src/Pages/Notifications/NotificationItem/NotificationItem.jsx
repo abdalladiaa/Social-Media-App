@@ -1,19 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-export default function NotificationItem({notification}) {
-    console.log(notification);
-    const {actor , isRead , type , _id:notificationId} = notification
-    const { name , photo , _id:actorId } = actor 
-    
-  return (
-    <article className="group relative flex gap-4 rounded-[20px] border border-gray-100 p-4 transition-all duration-300 bg-white hover:bg-blue-50/30 hover:shadow-sm hover:border-blue-100">
+export default function NotificationItem({ notification }) {
+  console.log(notification);
+  const { actor, isRead, type, _id: notificationId, entityType , entityId } = notification;
+  const { name, photo, _id: actorId } = actor;
+  console.log(notification);
+  let linkItem = "";
 
+  const messageType = {
+    follow_user: {
+      type: "follow_user",
+      entityType: "user",
+      message: "started following you",
+    },
+    comment_post: {
+      type: "comment_post",
+      entityType: "post",
+      message: `commented on your post`,
+    },
+    share_post: {
+      type: "share_post",
+      entityType: "post",
+      message: `shared your post`,
+    },
+    like_post: {
+      type: "like_post",
+      entityType: "post",
+      message: "liked your post",
+    },
+  };
+
+  switch (entityType) {
+    case "post":
+      linkItem = `/detailes/${entityId}`
+      break;
+    case "user":
+      linkItem = `/profile/${entityId}`
+      break;
+  }
+
+  return (
+    <Link to={linkItem} className="group relative flex gap-4 rounded-[20px] border border-gray-100 p-4 transition-all duration-300 bg-white hover:bg-blue-50/30 hover:shadow-sm hover:border-blue-100">
       <div className="relative shrink-0">
         <Link
-          to={`/profile/${actorId}`}
+          to={entityId}
           className="block transition-transform active:scale-90"
         >
           <img
@@ -36,7 +69,7 @@ export default function NotificationItem({notification}) {
               {name}
             </Link>
             <span className="ml-1 text-gray-500 font-medium">
-              commented on your post
+              {messageType[type]?.message}
             </span>
           </div>
 
@@ -52,11 +85,8 @@ export default function NotificationItem({notification}) {
             <FaCheck size={10} strokeWidth={4} />
             <span>Read</span>
           </div>
-          <button className="text-[11px] font-bold text-gray-400 hover:text-blue-600 transition-colors">
-            View Post
-          </button>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

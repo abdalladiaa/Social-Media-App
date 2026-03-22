@@ -36,7 +36,7 @@ export default function ImagePreview({ image, onClose }) {
       <div className="absolute top-6 right-6 flex gap-3 z-[110]">
         <button
           onClick={onClose}
-          className="p-3 bg-white/10 hover:bg-red-500 text-white rounded-full transition-all duration-200 backdrop-blur-md border border-white/10"
+          className=" cursor-pointer p-3 bg-white/10 hover:bg-red-500 text-white rounded-full transition-all duration-200 backdrop-blur-md border border-white/10"
           aria-label="Close"
         >
           <IoClose size={24} />

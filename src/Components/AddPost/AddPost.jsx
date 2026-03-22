@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FaImage } from "react-icons/fa";
+import { FaChevronDown, FaGlobeAmericas, FaImage } from "react-icons/fa";
 import { AuthContext } from "../../Context/AuthContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -14,6 +14,7 @@ export default function AddPost() {
     defaultValues: {
       body: "",
       image: null,
+      privacy: "public",
     },
   });
 
@@ -26,6 +27,7 @@ export default function AddPost() {
   async function addPost(values) {
     const formData = new FormData();
     formData.append("body", values.body || " ");
+    formData.append("privacy", values.privacy)
     if (values.image && values.image[0]) {
       formData.append("image", values.image[0]);
     }
@@ -65,11 +67,36 @@ export default function AddPost() {
                 alt={userData?.name}
                 className="w-12 h-12 rounded-2xl object-cover ring-2 ring-gray-50 group-hover:ring-blue-100 transition-all"
               />
-              <div className="absolute inset-0 rounded-2xl bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </Link>
 
           <div className="flex-1">
+            {/* User Name & Privacy Selector */}
+            <div className="flex flex-col mb-2">
+              <span className="text-sm font-black text-[#0B1733] mb-1">
+                {userData?.name}
+              </span>
+
+              <div className="relative w-fit">
+                <select
+                  {...register("privacy")}
+                  className="appearance-none bg-gray-50 border border-gray-100 text-[11px] font-bold text-gray-500 py-1 pl-7 pr-8 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-gray-100"
+                >
+                  <option value="public">Public</option>
+                  <option value="following">Followers</option>
+                  <option value="only_me">Only Me</option>
+                </select>
+
+                {/* Dynamic Icon based on Selection (بشكل مبسط هنا) */}
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <FaGlobeAmericas size={10} />
+                </div>
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <FaChevronDown size={8} />
+                </div>
+              </div>
+            </div>
+
             <textarea
               {...register("body")}
               rows="3"
@@ -121,7 +148,7 @@ export default function AddPost() {
           <button
             type="submit"
             disabled={isPending || isFormEmpty}
-            className="relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+            className=" cursor-pointer relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           >
             <span className={isPending ? "opacity-0" : "opacity-100"}>
               Post

@@ -21,6 +21,9 @@ export default function Navbar() {
     navigate("/auth");
   }
 
+  console.log(userData , "from navbar");
+  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

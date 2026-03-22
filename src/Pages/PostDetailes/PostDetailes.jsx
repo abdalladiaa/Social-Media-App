@@ -3,10 +3,12 @@ import usePosts from "../../CustomHooks/UsePosts";
 import { useParams } from "react-router-dom";
 import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import PostCard from "../../Components/PostCard/PostCard";
+import NoPosts from "../../Components/NoPosts/NoPosts";
+import PostNotFound from "../../Components/PostCard/PostNotFound/PostNotFound";
 
 export default function PostDetailes() {
   const { postId } = useParams();
-  const { data, isFetched, isLoading } = usePosts(
+  const { data, isFetched, isLoading, isError } = usePosts(
     ["detailes", postId],
     true,
     `posts/${postId}`,
@@ -14,10 +16,11 @@ export default function PostDetailes() {
 
   console.log(data, "data");
 
-  return (
-    <>
-      {isLoading && <LoadingCard />}
-      {isFetched && <PostCard post={data?.data?.post} isDetailes={true} />}
-    </>
-  );
+  if (isLoading) return <LoadingCard />;
+
+  if (isError || !data?.data?.post) {
+    return <PostNotFound/>;
+  }
+
+  return <PostCard post={data.data.post} isDetailes={true} />;
 }

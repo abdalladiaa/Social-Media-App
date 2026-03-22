@@ -7,11 +7,14 @@ export default function Layout() {
   const { token } = useContext(AuthContext);
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-50">
+
       {token && <AppNav />}
-      <div className="max-w-2xl md:mx-auto mt-4 mx-2">
-      <Outlet />
-      </div>
-    </>
+      
+
+      <main className="mx-auto max-w-6xl px-3 py-3.5">
+        <Outlet />
+      </main>
+    </div>
   );
 }

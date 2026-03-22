@@ -8,6 +8,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import { MdModeEdit } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { IoPencilOutline, IoTrashOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 export default function Comment({ comment, post }) {
   const { userData } = useContext(AuthContext);
@@ -96,18 +97,23 @@ export default function Comment({ comment, post }) {
 
   return (
     <div className="relative flex items-start gap-2 mb-2">
-      <img
-        alt={comment.commentCreator.name}
-        className="mt-0.5 h-8 w-8 rounded-full object-cover"
-        src={comment.commentCreator.photo}
-      />
+      <Link to={`/profile/${comment.commentCreator._id}`}>
+        <img
+          alt={comment.commentCreator.name}
+          className="mt-0.5 h-8 w-8 rounded-full object-cover"
+          src={comment.commentCreator.photo}
+        />
+      </Link>
       <div className="min-w-0 flex-1">
         <div className="relative inline-block max-w-full rounded-2xl bg-[#f0f2f5] px-3 py-2">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-xs font-bold text-slate-900">
+              <Link
+                to={`/profile/${comment.commentCreator._id}`}
+                className="text-xs font-bold text-slate-900"
+              >
                 {comment.commentCreator.name}
-              </p>
+              </Link>
               {(comment.commentCreator.username && (
                 <p className="text-xs text-slate-500 flex">
                   @{comment.commentCreator.username}

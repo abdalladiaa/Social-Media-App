@@ -5,7 +5,7 @@ import PostCard from "../../Components/PostCard/PostCard";
 import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import AddPost from "../../Components/AddPost/AddPost";
 import MyProfileDetailesCard from "../../Components/ProfileDetailesCard/MyProfileDetailesCard";
-
+import NoPosts from "../../Components/NoPosts/NoPosts";
 
 export default function MyProfile() {
   const { userData } = useContext(AuthContext);
@@ -19,11 +19,16 @@ export default function MyProfile() {
 
   return (
     <>
-      <MyProfileDetailesCard userData={userData} posts ={posts} />
+      <MyProfileDetailesCard userData={userData} posts={posts} />
       <AddPost />
-      {(isLoading || Boolean(userData?._id) == false) && <LoadingCard />}
-      {isFetched &&
-        posts.map((post) => <PostCard key={post._id} post={post} />)}
+
+      {isLoading || !userData?._id ? (
+        <LoadingCard />
+      ) : posts.length > 0 ? (
+        posts.map((post) => <PostCard key={post._id} post={post} />)
+      ) : (
+        <NoPosts />
+      )}
     </>
   );
 }

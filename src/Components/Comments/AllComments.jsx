@@ -26,7 +26,7 @@ export default function AllComments({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300"
+      className=" fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300"
       onClick={handleBackdropClick}
     >
       <div className="relative w-full max-w-xl bg-white rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-300">
@@ -42,7 +42,7 @@ export default function AllComments({
           </div>
           <button
             onClick={onClose}
-            className="p-2 bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all duration-200"
+            className=" cursor-pointer p-2 bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all duration-200"
             aria-label="close"
           >
             <IoClose size={24} />

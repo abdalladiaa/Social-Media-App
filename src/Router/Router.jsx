@@ -10,6 +10,7 @@ import Notifications from "../Pages/Notifications/Notifications";
 import Settings from "../Pages/Settings/Settings";
 import MyProfile from "../Pages/MyProfile/MyProfile";
 import PublicProfile from "../Pages/PublicProfile/PublicProfile";
+import SuggestedFriends from "../Pages/SuggestedFriends/SuggestedFriends";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,14 @@ export const router = createBrowserRouter([
         element: (
           <PostsGuard>
             <Settings />
+          </PostsGuard>
+        ),
+      },
+      {
+        path: "suggestions",
+        element: (
+          <PostsGuard>
+            <SuggestedFriends />
           </PostsGuard>
         ),
       },

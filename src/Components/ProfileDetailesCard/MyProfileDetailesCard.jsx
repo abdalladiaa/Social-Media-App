@@ -28,7 +28,6 @@ export default function MyProfileDetailesCard({ userData, posts }) {
     if (values.photo && values.photo[0]) {
       formData.append("photo", values.photo[0]);
       console.log(imageValue);
-      console.log(values.photo, "photo[0]");
     }
     try {
       const { data } = await axios.put(
@@ -57,7 +56,6 @@ export default function MyProfileDetailesCard({ userData, posts }) {
   } = useGenericMutation(updateProfilePhoto, [
     "allPosts",
     "userPosts",
-    "profilePhoto",
   ]);
 
   return (

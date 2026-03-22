@@ -1,11 +1,24 @@
 import React from "react";
-import { FaUsers, FaUserPlus, FaBookmark, FaRegEnvelope, FaUserCheck } from "react-icons/fa";
-import { MdPostAdd } from "react-icons/md";
+import {
+  FaUserPlus,
+  FaRegEnvelope,
+  FaUserCheck,
+  FaUserMinus,
+} from "react-icons/fa";
+import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
+import { addFollow } from "../../utils/FollowFunc/FollowFunc";
+import { Oval } from "react-loader-spinner";
 
 export default function PublicProfileDetailesCard({ userData }) {
-  console.log(userData, " userData from public card ");
   const isFollowing = userData?.isFollowing;
-  const { cover, email, name, photo, username } = userData?.user || {};
+  const { cover, email, name, photo, username, _id } = userData?.user || {};
+
+  const { mutate, isPending } = useGenericMutation(
+    addFollow,
+    ["PublicProfilePosts", _id],
+    "Action Successful",
+    "Action Failed",
+  );
 
   return (
     <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden w-full mb-4 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
@@ -31,6 +44,7 @@ export default function PublicProfileDetailesCard({ userData }) {
                 "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
               }
               className="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md ring-2 ring-[#dbeafe]"
+              alt="profile"
             />
           </div>
 
@@ -40,7 +54,7 @@ export default function PublicProfileDetailesCard({ userData }) {
 
           <div className="mt-2 bg-[#0066FF]/10 px-3 py-1 rounded-full">
             <p className="text-sm text-[#0066FF] font-semibold tracking-wide">
-              {`@${username}` || "@RouteUser"}
+              @{username || "User"}
             </p>
           </div>
 
@@ -49,19 +63,40 @@ export default function PublicProfileDetailesCard({ userData }) {
             {email}
           </p>
 
-          {/* Follow Button - المضاف للـ User Profile */}
-          {isFollowing ? (
-            <button className="mt-6 w-full sm:w-auto min-w-[160px] cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-6 py-3 text-sm font-black text-gray-700 transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-100 border border-transparent active:scale-[0.98] group">
-              <FaUserCheck size={16} className="group-hover:hidden" />
-              <span className="group-hover:hidden">Following</span>
-              <span className="hidden group-hover:block">Unfollow</span>
-            </button>
-          ) : (
-            <button className="mt-6 w-full sm:w-auto min-w-[160px] cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl bg-[#1877f2] px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-200 transition-all hover:bg-[#166fe5] active:scale-[0.98]">
-              <FaUserPlus size={16} />
-              Follow User
-            </button>
-          )}
+          <button
+            disabled={isPending}
+            onClick={() => mutate(_id)}
+            className={`mt-6 w-full sm:w-auto min-w-[160px] cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-black transition-all active:scale-[0.98] group
+              ${
+                isPending
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : isFollowing
+                    ? "bg-gray-100 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-100 border border-transparent"
+                    : "bg-[#1877f2] text-white shadow-lg shadow-blue-200 hover:bg-[#166fe5]"
+              }`}
+          >
+            {isPending ? (
+              <Oval
+                height="16"
+                width="16"
+                color="currentColor"
+                strokeWidth={5}
+                secondaryColor="transparent"
+              />
+            ) : isFollowing ? (
+              <>
+                <FaUserCheck size={16} className="group-hover:hidden" />
+                <FaUserMinus size={16} className="hidden group-hover:block" />
+                <span className="group-hover:hidden">Following</span>
+                <span className="hidden group-hover:block">Unfollow</span>
+              </>
+            ) : (
+              <>
+                <FaUserPlus size={16} />
+                <span>Follow User</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
