@@ -22,8 +22,10 @@ export default function Posts() {
         limit: 10,
       },
     );
-  const allPosts = data?.pages?.flatMap((page) => page?.data.posts || page?.data.bookmarks
-);
+
+  const allPosts = data?.pages
+    ?.flatMap((page) => page?.data?.posts || page?.data?.bookmarks || [])
+    ?.filter(Boolean);
 
   return (
     <main className="min-w-0 w-full">
@@ -57,11 +59,9 @@ export default function Posts() {
               </div>
             )}
 
-            {allPosts?.length ? (
-              allPosts.map((post) => <PostCard key={post._id} post={post} />)
-            ) : isFetched && (
-              <NoPosts />
-            )}
+            {allPosts?.length
+              ? allPosts.map((post) => <PostCard key={post._id} post={post} />)
+              : isFetched && <NoPosts />}
 
             <div ref={loadMoreRef} className="h-10"></div>
             {isFetchingNextPage && <LoadingCard />}
