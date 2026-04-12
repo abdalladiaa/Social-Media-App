@@ -7,17 +7,19 @@ export default function CommentReply({ post, comment }) {
   const { _id: postId } = post;
   const { _id: commentId } = comment;
 
-  const { data, isLoading, isFetched } = useCommentReplies(
-    10,
-    postId,
-    commentId,
-  );
+  const {
+    data,
+    isLoading,
+    isFetched,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useCommentReplies(5, postId, commentId);
 
   const replies = data?.pages?.flatMap((page) => page.data?.replies) || [];
 
   return (
     <div className="relative mt-2 ml-5 pl-4">
-      {/* الخط الجانبي الواصل للردود */}
       {(replies.length > 0 || isFetched) && (
         <span className="absolute bottom-10 left-0 top-1 w-px rounded-full bg-slate-300" />
       )}
@@ -42,9 +44,20 @@ export default function CommentReply({ post, comment }) {
               </div>
             ))
           ) : (
-            <p className="text-xs text-slate-500 italic ml-2">No replies yet.</p>
+            <p className="text-xs text-slate-500 italic ml-2">
+              No replies yet.
+            </p>
           ))}
-
+        {hasNextPage && (
+          <button
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="cursor-pointer text-xs text-blue-600 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isFetchingNextPage ? "Loading..." : "Load More Replies"}
+          </button>
+        )}
         <div className="mt-2">
           <AddReply
             postId={postId}

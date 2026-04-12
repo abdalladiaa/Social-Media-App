@@ -29,8 +29,6 @@ export default function usePosts( queryKey, isEnabled, endPoint, options = {} ,)
     return { data, isLoading, isFetching, isFetched, isError };
   }
 
-  //! Infinite page-based query (page starts at 1)
-
   const fetchPosts = async ({ pageParam = 1 }) => {
     try {
       const sep = endPoint.includes("?") ? "&" : "?";

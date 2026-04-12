@@ -93,9 +93,11 @@ export default function CommentCard({
             </div>
           )}
         </div>
-        <div className="  sticky bottom-0 right-0 left-0 z-10 bg-transparent">
-          <AddComment postId={postId} />
-        </div>
+        {isDetails && (
+          <div className="  sticky bottom-0 right-0 left-0 z-10 bg-transparent">
+            <AddComment postId={postId} />
+          </div>
+        )}
       </div>
     </>
   );

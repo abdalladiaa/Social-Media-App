@@ -151,7 +151,7 @@ export default function AddPost() {
               />
             </label>
 
-            {/* Emoji Section - الـ Wrapper الأساسي */}
+
             <div className="relative" ref={emojiRef}>
               <button
                 onClick={() => setShowEmoji(!showEmoji)}
@@ -162,7 +162,6 @@ export default function AddPost() {
                 <span className="hidden sm:inline">Feeling/activity</span>
               </button>
 
-              {/* Emoji Picker - مكانه تحت الزرار */}
               {showEmoji && (
                 <div className="absolute top-full left-0 z-[100] mt-2 shadow-2xl animate-in fade-in slide-in-from-top-2">
                   <EmojiPicker

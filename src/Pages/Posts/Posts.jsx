@@ -23,9 +23,9 @@ export default function Posts() {
       },
     );
 
-  const allPosts = data?.pages
-    ?.flatMap((page) => page?.data?.posts || page?.data?.bookmarks || [])
-    ?.filter(Boolean);
+  const getItems = (page) => page?.data?.posts || page?.data?.bookmarks;
+
+  const allPosts = data?.pages?.flatMap(getItems)?.filter(Boolean);
 
   return (
     <main className="min-w-0 w-full">

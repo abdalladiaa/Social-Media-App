@@ -65,6 +65,8 @@ export default function AllComments({
           {isLoading ? (
             <div className="py-10">
               <LoadingComments />
+              <LoadingComments />
+              <LoadingComments />
             </div>
           ) : comments && comments.length > 0 ? (
             <div>

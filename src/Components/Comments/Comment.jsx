@@ -120,7 +120,8 @@ export default function Comment({ comment, post, isReply = false }) {
                 {commentCreator?.name}
               </Link>
               <p className="text-[10px] text-slate-500 leading-none mt-0.5">
-                @{commentCreator?.name?.split(" ").join("_").toLowerCase()} · {formatedPostDate}
+                @{commentCreator?.name?.split(" ").join("_").toLowerCase()} ·{" "}
+                {formatedPostDate}
               </p>
             </div>
           </div>
@@ -147,7 +148,10 @@ export default function Comment({ comment, post, isReply = false }) {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="text-blue-600 uppercase hover:text-blue-700">
+                <button
+                  type="submit"
+                  className="text-blue-600 uppercase hover:text-blue-700"
+                >
                   {updateIsPending ? "Saving..." : "Save"}
                 </button>
               </div>
@@ -208,21 +212,23 @@ export default function Comment({ comment, post, isReply = false }) {
             <span className="text-slate-400 font-normal italic">
               {formatedPostDate}
             </span>
-            
+
             <button
               disabled={likeCommentIsPending}
               onClick={() => likeCommentMutate()}
               className={`hover:underline transition-colors ${isLiked ? "text-blue-600" : "text-slate-500 hover:text-blue-600"}`}
             >
-              Like{likes?.length > 0 && ` (${likes.length})`}
+              {likeCommentIsPending ? "Liking..." : `Like(${likes.length})`}
             </button>
-            
+
             {!isReply && (
               <button
                 onClick={() => setShowReply(!showReply)}
                 className={`transition-colors hover:underline ${showReply ? "text-blue-600" : "text-slate-500 hover:text-blue-600"}`}
               >
-                {showReply ? "Hide replies" : `Reply${repliesCount > 0 ? ` (${repliesCount})` : ""}`}
+                {showReply
+                  ? "Hide replies"
+                  : `Reply${repliesCount > 0 ? ` (${repliesCount})` : ""}`}
               </button>
             )}
           </div>
