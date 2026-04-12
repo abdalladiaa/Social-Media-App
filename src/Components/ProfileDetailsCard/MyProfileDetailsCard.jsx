@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 
 
-export default function MyProfileDetailesCard({ userData, posts }) {
+export default function MyProfileDetailsCard({ userData, posts }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {

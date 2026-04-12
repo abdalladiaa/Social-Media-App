@@ -4,7 +4,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import PostCard from "../../Components/PostCard/PostCard";
 import LoadingCard from "../../Components/LoadingCard/LoadingCard";
 import AddPost from "../../Components/AddPost/AddPost";
-import MyProfileDetailesCard from "../../Components/ProfileDetailesCard/MyProfileDetailesCard";
+import MyProfileDetailsCard from "../../Components/ProfileDetailsCard/MyProfileDetailsCard";
 import NoPosts from "../../Components/NoPosts/NoPosts";
 
 export default function MyProfile() {
@@ -19,7 +19,7 @@ export default function MyProfile() {
 
   return (
     <>
-      <MyProfileDetailesCard userData={userData} posts={posts} />
+      <MyProfileDetailsCard userData={userData} posts={posts} />
       <AddPost />
 
       {isLoading || !userData?._id ? (

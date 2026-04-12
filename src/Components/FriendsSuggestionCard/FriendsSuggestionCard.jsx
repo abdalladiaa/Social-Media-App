@@ -4,13 +4,24 @@ import FriendItem from "./FriendItem/FriendItem";
 import useFriendsSuggestion from "../../CustomHooks/useFriendsSuggestion";
 import { Link } from "react-router-dom";
 import LoadingFriendSuggestion from "./LoadingFriendSuggestion/LoadingFriendSuggestion";
+import { useForm } from "react-hook-form";
 
 export default function FriendsSuggestionCard() {
-  const { data: users, isLoading } = useFriendsSuggestion(3 , ["friendSuggest"]);
-  const suggestionsCount = users?.data?.suggestions?.length || 0;
+  const { register, watch } = useForm({
+    defaultValues: {
+      search: "",
+    },
+  });
+
+  const searchValue = watch("search");
+  const { data: users, isLoading } = useFriendsSuggestion(3, searchValue);
+
+  const suggestions = users?.pages[0]?.data?.suggestions || [];
+  const suggestionsCount = suggestions.length;
 
   return (
     <>
+      {/* {MOBILE VISION} */}
       <div className="xl:hidden">
         <Link
           to="/suggestions"
@@ -29,6 +40,7 @@ export default function FriendsSuggestionCard() {
         </Link>
       </div>
 
+      {/* --- تصميم الديسكتوب (الكارت الكامل) --- */}
       <div className="hidden xl:block bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#E2E8F0] p-5 w-full max-w-sm">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -45,6 +57,7 @@ export default function FriendsSuggestionCard() {
           </span>
         </div>
 
+        {/* Search Input */}
         <div className="mb-5">
           <div className="relative group">
             <FaSearch
@@ -52,6 +65,7 @@ export default function FriendsSuggestionCard() {
               size={14}
             />
             <input
+              {...register("search")}
               placeholder="Search friends..."
               className="w-full rounded-2xl border border-gray-100 bg-gray-50/50 py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/5"
             />
@@ -59,18 +73,23 @@ export default function FriendsSuggestionCard() {
         </div>
 
         <div className="space-y-3">
-          {isLoading && (
+          {isLoading ? (
+            /* حالة التحميل: بنعرض الـ Skeletons */
             <>
-              <LoadingFriendSuggestion/>
-              <LoadingFriendSuggestion/>
-              <LoadingFriendSuggestion/>
+              <LoadingFriendSuggestion />
+              <LoadingFriendSuggestion />
+              <LoadingFriendSuggestion />
             </>
+          ) : suggestions?.length > 0 ? (
+            suggestions.map((user) => <FriendItem key={user._id} user={user} />)
+          ) : (
+            <div className="py-4 text-center">
+              <p className="text-sm font-medium text-slate-500 font-['Cairo']">
+                No users matched your search.
+              </p>
+            </div>
           )}
-          {users?.data.suggestions.map((user) => (
-            <FriendItem key={user._id} user={user} />
-          ))}
         </div>
-
         <Link
           to={"suggestions"}
           className="mt-5 cursor-pointer inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm font-black text-gray-600 transition-all hover:bg-gray-50 hover:border-gray-200 active:scale-[0.98]"

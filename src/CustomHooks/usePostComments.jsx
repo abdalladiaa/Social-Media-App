@@ -28,9 +28,7 @@ export default function usePostComments(postId, isEnabled = true) {
 }
 
 //! POST comment
-export function useAddComment(postId , formData) {
-
-
+export function useAddComment(postId, formData) {
   return useGenericMutation(
     addComment,
     ["comments", postId],
@@ -55,4 +53,16 @@ export function useDeleteComment() {
     "Comment deleted successfully",
     "Failed to delete comment",
   );
+}
+
+export function useLikeComment(postId, commentId) {
+  async function likeComment() {
+    const { data } = await axios.put(
+      `https://route-posts.routemisr.com/posts/${postId}/comments/${commentId}/like`,
+      {},
+      headersObjData(),
+    );
+    return data;
+  }
+  return useGenericMutation(likeComment, ["comments", postId]);
 }

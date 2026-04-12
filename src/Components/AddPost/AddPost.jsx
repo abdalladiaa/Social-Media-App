@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { FaChevronDown, FaGlobeAmericas, FaImage } from "react-icons/fa";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -7,9 +6,20 @@ import { headersObjData } from "../../Helper/HeadersObj";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { IoCloseCircle } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import {
+  Earth,
+  Image as ImageIcon,
+  Smile,
+  Send,
+  ChevronDown,
+} from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
 export default function AddPost() {
   const { userData } = useContext(AuthContext);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const emojiRef = useRef(null);
+
   const { register, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
       body: "",
@@ -24,24 +34,30 @@ export default function AddPost() {
   const isFormEmpty =
     !bodyValue?.trim() && (!imageValue || imageValue.length === 0);
 
+  // إغلاق الإيموجي بيكر عند الضغط في أي مكان خارج المكون
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+        setShowEmoji(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   async function addPost(values) {
     const formData = new FormData();
     formData.append("body", values.body || " ");
-    formData.append("privacy", values.privacy)
+    formData.append("privacy", values.privacy);
     if (values.image && values.image[0]) {
       formData.append("image", values.image[0]);
     }
-    try {
-      const response = await axios.post(
-        "https://route-posts.routemisr.com/posts",
-        formData,
-        headersObjData(),
-      );
-      reset();
-      return response;
-    } catch (err) {
-      throw err;
-    }
+    const response = await axios.post(
+      "https://route-posts.routemisr.com/posts",
+      formData,
+      headersObjData(),
+    );
+    return response;
   }
 
   const { mutate, isPending } = useGenericMutation(
@@ -51,113 +67,123 @@ export default function AddPost() {
     "Failed to add post",
   );
 
-  const removeImage = () => {
-    setValue("image", null);
+  const onEmojiClick = (emojiData) => {
+    setValue("body", (bodyValue || "") + emojiData.emoji);
+  };
+
+  const onSubmit = (data) => {
+    mutate(data, {
+      onSuccess: () => {
+        reset();
+        setShowEmoji(false);
+      },
+    });
   };
 
   return (
-    <div className="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 p-4 sm:p-6 mb-6 w-full transition-all hover:shadow-md">
-      <form onSubmit={handleSubmit(mutate)} className="space-y-4">
-        {/* Input Section */}
-        <div className="flex gap-4">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm mb-6 transition-all hover:shadow-md">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Header Section */}
+        <div className="mb-3 flex items-start gap-3">
           <Link to={"/profile"} className="shrink-0">
-            <div className="relative group">
-              <img
-                src={userData?.photo}
-                alt={userData?.name}
-                className="w-12 h-12 rounded-2xl object-cover ring-2 ring-gray-50 group-hover:ring-blue-100 transition-all"
-              />
-            </div>
-          </Link>
-
-          <div className="flex-1">
-            {/* User Name & Privacy Selector */}
-            <div className="flex flex-col mb-2">
-              <span className="text-sm font-black text-[#0B1733] mb-1">
-                {userData?.name}
-              </span>
-
-              <div className="relative w-fit">
-                <select
-                  {...register("privacy")}
-                  className="appearance-none bg-gray-50 border border-gray-100 text-[11px] font-bold text-gray-500 py-1 pl-7 pr-8 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-gray-100"
-                >
-                  <option value="public">Public</option>
-                  <option value="following">Followers</option>
-                  <option value="only_me">Only Me</option>
-                </select>
-
-                {/* Dynamic Icon based on Selection (بشكل مبسط هنا) */}
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <FaGlobeAmericas size={10} />
-                </div>
-                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <FaChevronDown size={8} />
-                </div>
-              </div>
-            </div>
-
-            <textarea
-              {...register("body")}
-              rows="3"
-              placeholder={`What's on your mind, ${userData?.name?.split(" ")[0]}?`}
-              className="w-full p-0 text-lg text-gray-800 placeholder:text-gray-400 bg-transparent border-none resize-none focus:ring-0 focus:outline-none min-h-[80px]"
+            <img
+              alt={userData?.name}
+              className="h-11 w-11 rounded-full object-cover ring-2 ring-slate-50 hover:ring-blue-100 transition-all"
+              src={userData?.photo}
             />
+          </Link>
+          <div className="flex-1">
+            <p className="text-base font-extrabold text-slate-900 leading-tight">
+              {userData?.name?.toLowerCase()}
+            </p>
+            <div className="mt-1 inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+              <Earth size={12} />
+              <select
+                {...register("privacy")}
+                className="bg-transparent outline-none cursor-pointer appearance-none pr-4"
+              >
+                <option value="public">Public</option>
+                <option value="following">Followers</option>
+                <option value="only_me">Only me</option>
+              </select>
+              <ChevronDown size={10} className="-ml-3 pointer-events-none" />
+            </div>
           </div>
         </div>
 
-        {/* Image Preview Area */}
+        {/* Textarea Section */}
+        <textarea
+          {...register("body")}
+          rows="4"
+          placeholder={`What's on your mind, ${userData?.name?.split(" ")[0]}?`}
+          className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[17px] leading-relaxed text-slate-800 outline-none transition focus:border-[#1877f2] focus:bg-white resize-none"
+        />
+
+        {/* Image Preview */}
         {imageValue && imageValue.length > 0 && (
-          <div className="relative group animate-in zoom-in-95 duration-300">
+          <div className="relative mt-3 group animate-in zoom-in-95 duration-300">
             <img
               src={URL.createObjectURL(imageValue[0])}
               alt="Preview"
-              className="max-h-[350px] w-full rounded-2xl object-cover border border-gray-100 shadow-sm"
+              className="max-h-[350px] w-full rounded-2xl object-cover border border-slate-200"
             />
             <button
               type="button"
-              onClick={removeImage}
-              className="absolute top-3 right-3 p-1.5 bg-black/50 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-all scale-100 group-hover:scale-110"
+              onClick={() => setValue("image", null)}
+              className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-all shadow-lg"
             >
-              <IoCloseCircle size={24} />
+              <IoCloseCircle size={22} />
             </button>
           </div>
         )}
 
         {/* Action Bar */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-          <div className="flex items-center gap-1">
-            <input
-              type="file"
-              accept="image/*"
-              id="postImage"
-              className="hidden"
-              {...register("image")}
-            />
-            <label
-              htmlFor="postImage"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer font-medium"
-            >
-              <div className="p-2 bg-blue-100/50 rounded-lg text-blue-600">
-                <FaImage size={18} />
-              </div>
-              <span className="hidden sm:inline">Add Photo</span>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+          <div className="flex items-center gap-2">
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100">
+              <ImageIcon size={18} className="text-emerald-600" />
+              <span className="hidden sm:inline">Photo/video</span>
+              <input
+                {...register("image")}
+                accept="image/*"
+                className="hidden"
+                type="file"
+              />
             </label>
+
+            {/* Emoji Section - الـ Wrapper الأساسي */}
+            <div className="relative" ref={emojiRef}>
+              <button
+                onClick={() => setShowEmoji(!showEmoji)}
+                type="button"
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-slate-100 ${showEmoji ? "text-blue-600 bg-blue-50" : "text-slate-600"}`}
+              >
+                <Smile size={18} className="text-amber-500" />
+                <span className="hidden sm:inline">Feeling/activity</span>
+              </button>
+
+              {/* Emoji Picker - مكانه تحت الزرار */}
+              {showEmoji && (
+                <div className="absolute top-full left-0 z-[100] mt-2 shadow-2xl animate-in fade-in slide-in-from-top-2">
+                  <EmojiPicker
+                    onEmojiClick={onEmojiClick}
+                    width={320}
+                    height={400}
+                    searchPlaceholder="Search emojis..."
+                    previewConfig={{ showPreview: false }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isPending || isFormEmpty}
-            className=" cursor-pointer relative px-8 py-2.5 bg-blue-600 text-white font-bold rounded-xl overflow-hidden transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 active:scale-95 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+            className="flex items-center gap-2 rounded-lg bg-[#1877f2] px-6 py-2 text-sm font-extrabold text-white shadow-sm transition-all hover:bg-[#166fe5] active:scale-95 disabled:opacity-60"
           >
-            <span className={isPending ? "opacity-0" : "opacity-100"}>
-              Post
-            </span>
-            {isPending && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              </div>
-            )}
+            {isPending ? "Posting..." : "Post"}
+            {!isPending && <Send size={16} />}
           </button>
         </div>
       </form>

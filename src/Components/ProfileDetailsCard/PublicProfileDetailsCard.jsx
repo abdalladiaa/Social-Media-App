@@ -9,7 +9,7 @@ import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { addFollow } from "../../utils/FollowFunc/FollowFunc";
 import { Oval } from "react-loader-spinner";
 
-export default function PublicProfileDetailesCard({ userData }) {
+export default function PublicProfileDetailsCard({ userData }) {
   const isFollowing = userData?.isFollowing;
   const { cover, email, name, photo, username, _id } = userData?.user || {};
 

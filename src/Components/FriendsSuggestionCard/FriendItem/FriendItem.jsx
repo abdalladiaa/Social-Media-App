@@ -7,8 +7,9 @@ import { addFollow } from "../../../utils/FollowFunc/FollowFunc";
 import { Oval } from "react-loader-spinner";
 
 export default function FriendItem({ user }) {
-  const { _id, photo, name, followersCount, mutualFollowersCount, userName } =
+  const { _id, photo, name, followersCount, mutualFollowersCount, username } =
     user;
+    
 
   const { mutate, isPending } = useGenericMutation(
     addFollow,
@@ -37,7 +38,7 @@ export default function FriendItem({ user }) {
               {name}
             </Link>
             <p className="truncate text-[11px] font-medium text-gray-500">
-              @{userName || "User"}
+              @{username || "user"}
             </p>
           </div>
         </div>

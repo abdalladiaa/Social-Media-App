@@ -6,10 +6,10 @@ import PostCard from "../../Components/PostCard/PostCard";
 import NoPosts from "../../Components/NoPosts/NoPosts";
 import PostNotFound from "../../Components/PostCard/PostNotFound/PostNotFound";
 
-export default function PostDetailes() {
+export default function PostDetails() {
   const { postId } = useParams();
   const { data, isFetched, isLoading, isError } = usePosts(
-    ["detailes", postId],
+    ["details", postId],
     true,
     `posts/${postId}`,
   );
@@ -22,5 +22,5 @@ export default function PostDetailes() {
     return <PostNotFound/>;
   }
 
-  return <PostCard post={data.data.post} isDetailes={true} />;
+  return <PostCard post={data.data.post} isDetails={true} />;
 }

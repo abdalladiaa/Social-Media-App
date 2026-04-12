@@ -1,5 +1,5 @@
 
-import PublicProfileDetailesCard from "../../Components/ProfileDetailesCard/PublicProfileDetailesCard";
+import PublicProfileDetailsCard from "../../Components/ProfileDetailsCard/PublicProfileDetailsCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { headersObjData } from "../../Helper/HeadersObj";
@@ -40,7 +40,7 @@ export default function PublicProfile() {
 
   return (
     <>
-      <PublicProfileDetailesCard userData={userData} />
+      <PublicProfileDetailsCard userData={userData} />
 
       {isLoading || !userData?.user?._id ? (
         <LoadingCard />

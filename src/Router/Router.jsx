@@ -5,7 +5,7 @@ import Posts from "../Pages/Posts/Posts";
 import AuthPage from "../Pages/AuthPage/AuthPage";
 import PostsGuard from "../Guards/PostsGuard";
 import AuthGuard from "../Guards/AuthGuard";
-import PostDetailes from "../Pages/PostDetailes/PostDetailes";
+import PostDetails from "../Pages/PostDetails/PostDetails";
 import Notifications from "../Pages/Notifications/Notifications";
 import Settings from "../Pages/Settings/Settings";
 import MyProfile from "../Pages/MyProfile/MyProfile";
@@ -46,10 +46,10 @@ export const router = createBrowserRouter([
         element:<PostsGuard><PublicProfile/></PostsGuard>
       },
       {
-        path: "detailes/:postId",
+        path: "details/:postId",
         element: (
           <PostsGuard>
-            <PostDetailes />
+            <PostDetails />
           </PostsGuard>
         ),
       },

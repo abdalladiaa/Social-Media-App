@@ -1,92 +1,141 @@
-import React, { useState } from "react";
-import { FaCheck } from "react-icons/fa";
-import { FiMessageCircle } from "react-icons/fi";
+import { Check, Heart, UserPlus, Share2, MessageCircle } from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { formatDistanceToNowStrict } from "date-fns";
+import { useMarkNotificationAsRead } from "../../../CustomHooks/useNotifications";
 
-export default function NotificationItem({ notification }) {
-  console.log(notification);
-  const { actor, isRead, type, _id: notificationId, entityType , entityId } = notification;
-  const { name, photo, _id: actorId } = actor;
-  console.log(notification);
-  let linkItem = "";
+export default function NotificationItem({ notification, onMarkAsRead }) {
+  const {
+    actor,
+    isRead,
+    type,
+    _id: notificationId,
+    entityType,
+    entityId,
+    createdAt,
+  } = notification;
 
-  const messageType = {
+  const { name, photo } = actor;
+
+  const time = createdAt
+    ? formatDistanceToNowStrict(new Date(createdAt))
+        .replace(/ seconds?/, "s")
+        .replace(/ minutes?/, "m")
+        .replace(/ hours?/, "h")
+        .replace(/ days?/, "d")
+        .replace(/ months?/, "mo")
+        .replace(/ years?/, "y")
+    : "now";
+
+  const config = {
     follow_user: {
-      type: "follow_user",
-      entityType: "user",
       message: "started following you",
+      icon: <UserPlus size={14} strokeWidth={2.5} />,
+      color: "text-emerald-500",
     },
     comment_post: {
-      type: "comment_post",
-      entityType: "post",
-      message: `commented on your post`,
+      message: "commented on your post",
+      icon: <MessageCircle size={14} strokeWidth={2.5} />,
+      color: "text-blue-600",
     },
     share_post: {
-      type: "share_post",
-      entityType: "post",
-      message: `shared your post`,
+      message: "shared your post",
+      icon: <Share2 size={14} strokeWidth={2.5} />,
+      color: "text-purple-500",
     },
     like_post: {
-      type: "like_post",
-      entityType: "post",
       message: "liked your post",
+      icon: <Heart size={14} strokeWidth={2.5} />,
+      color: "text-pink-500",
     },
   };
 
-  switch (entityType) {
-    case "post":
-      linkItem = `/detailes/${entityId}`
-      break;
-    case "user":
-      linkItem = `/profile/${entityId}`
-      break;
-  }
+  const currentConfig = config[type] || config.comment_post;
+  const linkItem =
+    entityType === "post" ? `/details/${entityId}` : `/profile/${entityId}`;
+
+  // ==================================Mark Notification As Read========================
+  const {
+    mutate: markAsReadMutate,
+    isPending: markAsReadIsPending,
+  } = useMarkNotificationAsRead(notificationId);
+
 
   return (
-    <Link to={linkItem} className="group relative flex gap-4 rounded-[20px] border border-gray-100 p-4 transition-all duration-300 bg-white hover:bg-blue-50/30 hover:shadow-sm hover:border-blue-100">
-      <div className="relative shrink-0">
-        <Link
-          to={entityId}
-          className="block transition-transform active:scale-90"
-        >
+    <div className="relative">
+      <Link
+        to={linkItem}
+        className={`group flex gap-4 rounded-[20px] border p-4 transition-all duration-200 hover:shadow-sm ${
+          isRead ? "border-gray-100" : "border-blue-100"
+        }`}
+      >
+        {/* Avatar Section */}
+        <div className="relative shrink-0">
           <img
             alt={name}
-            className="h-12 w-12 rounded-2xl object-cover ring-2 ring-gray-50 group-hover:ring-white transition-all"
+            className="h-12 w-12 rounded-2xl object-cover"
             src={photo}
           />
-        </Link>
-        <span className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white ring-4 ring-white shadow-sm">
-          <FiMessageCircle size={12} />
-        </span>
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-2">
-          <div className="text-sm leading-relaxed text-gray-800">
-            <Link
-              to={`/profile/${actorId}`}
-              className="font-black text-gray-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 transition-colors"
-            >
-              {name}
-            </Link>
-            <span className="ml-1 text-gray-500 font-medium">
-              {messageType[type]?.message}
+          <span
+            className={`absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm border border-gray-100 ${currentConfig.color}`}
+          >
+            {currentConfig.icon}
+          </span>
+        </div>
+
+        {/* Content Section */}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="text-sm leading-relaxed text-gray-800">
+              <span className="font-black text-gray-900 group-hover:text-blue-600 transition-colors">
+                {name}
+              </span>
+              <span className="ml-1 text-gray-500 font-medium">
+                {currentConfig.message}
+              </span>
+            </div>
+
+            <span className="text-[10px] font-bold text-gray-400 px-2 py-0.5 rounded-lg shrink-0">
+              {time}
             </span>
           </div>
 
-          <span className="text-[11px] font-bold text-gray-400 bg-gray-50 px-2 py-0.5 rounded-lg shrink-0">
-            4d
-          </span>
-        </div>
-        <p className="mt-1 text-sm text-gray-600 font-medium line-clamp-2">
-          "Test"
-        </p>
-        <div className="mt-3 flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100/50">
-            <FaCheck size={10} strokeWidth={4} />
-            <span>Read</span>
+          {/* Action Buttons */}
+          <div className="mt-3 flex items-center gap-3">
+            {isRead ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                <Check size={13} strokeWidth={3} />
+                <span>Read</span>
+              </span>
+            ) : (
+              <button
+                type="button"
+                disabled={markAsReadIsPending}
+                onClick={(e) => {
+                  e.preventDefault();
+                  markAsReadMutate(notificationId); 
+                }}
+                className={`z-10 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold transition-all 
+        ${
+          markAsReadIsPending
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
+            : "bg-white text-[#1877f2] ring-1 ring-[#dbeafe] hover:bg-[#e7f3ff] cursor-pointer"
+        }`}
+              >
+                {markAsReadIsPending ? (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
+                ) : (
+                  <Check size={13} strokeWidth={3} />
+                )}
+
+                <span>
+                  {markAsReadIsPending ? "Marking..." : "Mark as read"}
+                </span>
+              </button>
+            )}
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

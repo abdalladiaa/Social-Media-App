@@ -1,28 +1,23 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { FaUser, FaCog, FaSignOutAlt, FaRegUser } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaRegUser } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { CiMenuBurger } from "react-icons/ci";
 import { IoHomeOutline } from "react-icons/io5";
 import { FaGear } from "react-icons/fa6";
+import { useSignout } from "../../utils/signoutFunc/signout";
+import { useNotifications } from "../../CustomHooks/useNotifications";
+import { getNotifications } from "../../utils/NotificationsFunc/getNotifications";
+import { getUnreadCountNotifications } from "../../utils/NotificationsFunc/getUnreadCountNotifications";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { userData, setToken } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { userData } = useContext(AuthContext);
+  const { signout } = useSignout();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-
-  function signout() {
-    localStorage.removeItem("token");
-    setToken(null);
-    navigate("/auth");
-  }
-
-  console.log(userData , "from navbar");
-  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,14 +30,20 @@ export default function Navbar() {
   }, []);
 
   const navLinkStyling = ({ isActive }) =>
-    `relative flex items-center justify-center gap-2 rounded-xl px-3 py-2 md:px-4 md:py-2 text-sm font-bold transition-all duration-300 ${
+    `relative flex items-center justify-center gap-2 rounded-xl px-3 py-2 md:px-4 md:py-2 text-sm font-bold transition-all ${
       isActive
-        ? "bg-blue-600 text-white shadow-md shadow-blue-200 scale-105"
+        ? "bg-blue-600 text-white shadow-md shadow-blue-200"
         : "text-gray-500 hover:bg-gray-100 hover:text-blue-600"
     }`;
 
+  // ==================================== NOTIFICATIONS ====================================
+  const { data } = useNotifications(getUnreadCountNotifications, ["NotificationCount"]);
+  console.log(data);
+  
+  const notificationCount = data?.data?.unreadCount || 0;
+
   return (
-    <nav className="flex items-center justify-between px-3 md:px-10 py-3 bg-white/85 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
+    <nav className="flex items-center justify-between px-3 md:px-10 py-3 bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="flex shrink-0">
         <Link
           to="/"
@@ -66,8 +67,11 @@ export default function Navbar() {
         <NavLink className={navLinkStyling} to="/notifications">
           <div className="relative">
             <IoMdNotificationsOutline size={22} />
-            {/* Notification Dot */}
-            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 border-2 border-white rounded-full"></span>
+            {notificationCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-black text-white border-2 border-white pointer-events-none">
+                {notificationCount > 99 ? "99+" : notificationCount}
+              </span>
+            )}
           </div>
           <span className="hidden lg:inline">Notifications</span>
         </NavLink>
@@ -76,53 +80,55 @@ export default function Navbar() {
       <div className="relative shrink-0" ref={dropdownRef}>
         <button
           onClick={toggleMenu}
-          className="flex items-center gap-2 p-1 md:p-1.5 md:pr-3 rounded-full bg-white border border-gray-200 hover:border-blue-300 transition-all"
+          className="cursor-pointer flex items-center gap-2 p-1 md:p-1.5 md:pr-3 rounded-full bg-white border border-gray-200 hover:border-blue-300 transition-colors"
         >
-          <div className="relative">
-            <img
-              src={
-                userData?.photo ||
-                "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
-              }
-              className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-gray-100"
-              alt="user"
-            />
-          </div>
-
+          <img
+            src={
+              userData?.photo ||
+              "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
+            }
+            className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-gray-100"
+            alt="user"
+          />
           <span className="hidden md:inline font-bold text-sm text-gray-700">
-            {userData?.name?.split(" ")[0]}
+            {userData?.name}
           </span>
           <CiMenuBurger className="text-gray-400" size={16} />
         </button>
 
-        {/* Dropdown Menu */}
+        {/* Dropdown Menu - Clean & Static */}
         {menuOpen && (
-          <div className="absolute right-0 mt-3 w-52 md:w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-[110] animate-in fade-in zoom-in duration-200">
+          <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-[110]">
             <div className="px-4 py-3 border-b border-gray-50 mb-1">
               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                 Account
               </p>
-              <p className="text-sm font-bold text-gray-800 truncate">
+              <p className="text-xs font-bold text-gray-800 truncate">
                 {userData?.email}
               </p>
             </div>
+
             <Link
               to="/profile"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-slate-50"
             >
               <FaUser size={14} className="text-gray-400" /> Profile
             </Link>
+
             <Link
               to="/settings"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-slate-50"
             >
               <FaGear size={14} className="text-gray-400" /> Settings
             </Link>
+
+            <div className="my-1 border-t border-gray-50" />
+
             <button
               onClick={signout}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 w-full text-left"
+              className="cursor-pointer flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 w-full text-left"
             >
               <FaSignOutAlt size={14} /> Logout
             </button>

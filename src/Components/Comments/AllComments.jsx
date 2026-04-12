@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 import Comment from "./Comment";
 import LoadingComments from "./LoadingComments";
 import AddComment from "./AddComment";
-import { FaComment } from "react-icons/fa";
+import { MessageCircle } from "lucide-react";
 
 export default function AllComments({
   comments = [],
@@ -11,7 +11,6 @@ export default function AllComments({
   isLoading = false,
   post,
 }) {
-
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -26,57 +25,61 @@ export default function AllComments({
 
   return (
     <div
-      className=" fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative w-full max-w-xl bg-white rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-300">
-        {/* Header - ثابت */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+      <div className="relative w-full max-w-xl bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl flex flex-col h-[90vh] sm:max-h-[85vh] overflow-hidden">
+        {/* --- Header: Clean & Static --- */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-50">
           <div>
-            <h3 className="text-xl font-black text-gray-900 leading-none">
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
               Comments
+              <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                {comments.length}
+              </span>
             </h3>
-            <p className="text-xs text-gray-500 mt-1 font-medium">
-              {comments.length} people shared their thoughts
-            </p>
           </div>
           <button
             onClick={onClose}
-            className=" cursor-pointer p-2 bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all duration-200"
-            aria-label="close"
+            className="cursor-pointer p-2 bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-colors duration-200"
           >
-            <IoClose size={24} />
+            <IoClose size={20} />
           </button>
         </div>
 
-
-        <div className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar bg-gray-50/30">
+        {/* --- Comments List Container --- */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2 bg-slate-50/20 custom-scrollbar">
           {isLoading ? (
-            <LoadingComments />
+            <div className="py-10">
+              <LoadingComments />
+            </div>
           ) : comments && comments.length > 0 ? (
-            <div className="space-y-6">
+            <div>
               {comments.map((c) => (
                 <Comment key={c._id} comment={c} post={post} />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <FaComment />
+            /* --- Clean Empty State (No Bounce) --- */
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 bg-white shadow-sm border border-slate-50 rounded-full flex items-center justify-center mb-5">
+                <MessageCircle size={32} className="text-blue-500/30" />
               </div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-widest">
-                No comments yet
+              <p className="text-sm text-slate-900 font-black uppercase tracking-widest">
+                No Comments yet
               </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Be the first to start the conversation!
+              <p className="text-xs text-slate-400 mt-1 max-w-[200px] leading-relaxed">
+                Be the visionary who starts this conversation.
               </p>
             </div>
           )}
         </div>
 
-
-        <div className="p-4 bg-white border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-          <AddComment postId={post?._id} />
+        {/* --- Footer (Add Comment) --- */}
+        <div className="p-4 bg-white border-t border-slate-50 shadow-sm">
+          <div className="max-w-full overflow-hidden">
+            <AddComment postId={post?._id} />
+          </div>
         </div>
       </div>
     </div>

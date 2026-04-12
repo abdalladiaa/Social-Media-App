@@ -47,7 +47,7 @@ export default function AddComment({ postId }) {
   const { mutate, isPending } = useGenericMutation(
     addComment,
     ["comments", postId],
-    "Comment shared! 💬",
+    "Comment shared!",
     "Failed to send comment",
   );
 

@@ -14,5 +14,12 @@ input::-ms-clear {
 body {
   background-color: #f0f2f5;
 }
+@layer base {
+  button {
+    @apply cursor-pointer disabled:cursor-not-allowed;
+  }
+  
+
+}
 
 

@@ -1,54 +1,54 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import {
-  FaRegHeart,
-  FaRegComment,
-  FaShare,
-  FaGlobeAmericas,
-  FaChevronDown,
-} from "react-icons/fa";
-import { formatDistanceToNow } from "date-fns";
-import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
-import { AuthContext } from "../../Context/AuthContext";
-import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { Link } from "react-router-dom";
-import usePostComments from "../../CustomHooks/usePostComments";
-import LoadingComments from "../Comments/LoadingComments";
-import CommentCard from "../Comments/CommentCard";
-import { AiFillLike, AiOutlineLike } from "react-icons/ai";
-import ImagePreview from "./ImagePreview";
+import { formatDistanceToNow } from "date-fns";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { headersObjData } from "../../Helper/HeadersObj";
+
+// Context & Hooks
+import { AuthContext } from "../../Context/AuthContext";
+import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
+import usePostComments from "../../CustomHooks/usePostComments";
+
+// Components
+import CommentCard from "../Comments/CommentCard";
+import ImagePreview from "./ImagePreview";
 import AllComments from "../Comments/AllComments";
 
-import { deletePostFunc } from "./PostCardFunctions/deletePostFunc";
-import { likePostFunc } from "./PostCardFunctions/LikePostFunc";
-import { SavePostFunc } from "./PostCardFunctions/SavePostFunc";
+// Helpers & Icons
+import { headersObjData } from "../../Helper/HeadersObj";
+import {
+  Earth,
+  Ellipsis,
+  ThumbsUp,
+  MessageCircle,
+  Share2,
+  Repeat2,
+  ChevronDown,
+  Bookmark,
+  Edit2,
+  Trash2,
+  Lock,
+  Users,
+} from "lucide-react";
 
-export default function PostCard({ post, isDetailes = false }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+// Functions
+import { deletePostFunc } from "../../utils/PostCardFunctions/deletePostFunc";
+import { likePostFunc } from "../../utils/PostCardFunctions/LikePostFunc";
+import { SavePostFunc } from "../../utils/PostCardFunctions/SavePostFunc";
+
+export default function PostCard({ post, isDetails = false }) {
+  // --- States & Context ---
   const { userData } = useContext(AuthContext);
-  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showUpdateInput, setShowUpdateInput] = useState(false);
-  const openImagePreview = () => setIsImagePreviewOpen(true);
-  const closeImagePreview = () => setIsImagePreviewOpen(false);
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const {
     body,
     createdAt,
-    id: postId,
+    _id: postId,
     image: postPhoto,
     sharesCount,
     topComment,
@@ -57,16 +57,25 @@ export default function PostCard({ post, isDetailes = false }) {
     privacy,
     bookmarked,
   } = post;
-  console.log(post);
 
-  const { name: userName, photo: UserPhoto, _id: userId } = post?.user;
+  const { name: userName, photo: UserPhoto, _id: userId } = post?.user || {};
+  const isLiked = likes?.some((id) => id === userData?.id);
+  const [isSaved, setIsSaved] = useState(bookmarked);
 
-  const formatedPostDate = createdAt
-    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
-    : "";
+  // --- Close Menu on Outside Click ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  //!==================DELETE POST===================================
+  // --- Mutations (Logic) ---
 
+  // 1. Delete Post (بدون رسالة تأكيد)
   const { mutate: deleteMutate, isPending: deleteIsPending } =
     useGenericMutation(
       () => deletePostFunc(postId),
@@ -75,31 +84,23 @@ export default function PostCard({ post, isDetailes = false }) {
       "Post Doesn't Deleted",
     );
 
-  // controls for comments preview modal and lazy fetching
-  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-  const openComments = () => setIsCommentsOpen(true);
-  const closeComments = () => setIsCommentsOpen(false);
+  // 2. Like Post
+  const { mutate: likePostMutate, isPending: likePostIsPending } =
+    useGenericMutation(() => likePostFunc(postId), ["allPosts", "userPosts"]);
 
-  const {
-    data,
-    isLoading: commentsIsLoading,
-    isFetched: commentsIsFetched,
-  } = usePostComments(postId, isDetailes || isCommentsOpen);
-  const postComments = data?.data?.comments;
+  // 3. Save Post
+  const { mutate: savePostMutate, isPending: savePostIsPending } =
+    useGenericMutation(() => SavePostFunc(postId), ["allPosts", "userPosts"]);
 
-  //! ==========================Update Post============================
-
-  const { register, handleSubmit, reset, setValue } = useForm({
-    defaultValues: {
-      body: "",
-      privacy: "",
-    },
+  // 4. Update Post
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: { body: "", privacy: "" },
   });
 
   function handlePostUpdateBtn() {
     setValue("body", body);
+    setValue("privacy", privacy || "public");
     setShowUpdateInput(true);
-    setValue("privacy", privacy);
     setMenuOpen(false);
   }
 
@@ -107,17 +108,13 @@ export default function PostCard({ post, isDetailes = false }) {
     const formData = new FormData();
     formData.append("body", values.body);
     formData.append("privacy", values.privacy);
-    try {
-      const { data } = await axios.put(
-        `https://route-posts.routemisr.com/posts/${postId}`,
-        formData,
-        headersObjData(),
-      );
-      setShowUpdateInput(false);
-      return data;
-    } catch (err) {
-      throw err;
-    }
+    const { data } = await axios.put(
+      `https://route-posts.routemisr.com/posts/${postId}`,
+      formData,
+      headersObjData(),
+    );
+    setShowUpdateInput(false);
+    return data;
   }
 
   const { mutate: updateMutate, isPending: updateIsPending } =
@@ -128,335 +125,265 @@ export default function PostCard({ post, isDetailes = false }) {
       "Post Doesn't Update",
     );
 
-  // !===========================LIKE POST=============================
-
-  const { mutate: likePostMutate, isPending: likePostIsPending } =
-    useGenericMutation(() => likePostFunc(postId), ["allPosts", "userPosts"]);
-
-  const isLiked = likes?.some((id) => id === userData?.id);
-
-  // !=============================SAVE POST==============================
-
-  const { mutate: savePostMutate, isPending: savePostIsPending } =
-    useGenericMutation(() => SavePostFunc(postId), ["allPosts", "userPosts"]);
-  const [isSaved, setIsSaved] = useState(bookmarked);
+  // --- Comments Logic ---
+  const { data: commentsData, isLoading: commentsIsLoading } = usePostComments(
+    postId,
+    isDetails || isCommentsOpen,
+  );
+  const postComments = commentsData?.data?.comments || [];
 
   return (
-    <article className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-5 transition-shadow hover:shadow-md w-full overflow-hidden">
-      <div className="p-4 sm:p-5">
-        <div className={`flex items-start justify-between mb-3`}>
-          <div className="flex items-center gap-3">
-            {/* User avatar */}
-            <div className="relative">
-              <img
-                src={UserPhoto}
-                alt={userName}
-                className="w-11 h-11 rounded-full object-cover border border-gray-100 shadow-sm"
-              />
-            </div>
+    <article className="overflow-visible rounded-xl border border-slate-200 bg-white shadow-sm mb-5 transition-all">
+      <div className="p-4">
+        {/* --- Header Section --- */}
+        <div className="flex items-center gap-3">
+          <Link to={`/profile/${userId}`} className="shrink-0">
+            <img
+              alt={userName}
+              className="h-11 w-11 rounded-full object-cover border border-slate-100"
+              src={
+                UserPhoto ||
+                "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
+              }
+            />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <Link
+              to={`/profile/${userId}`}
+              className="truncate text-sm font-bold text-slate-900 hover:underline capitalize"
+            >
+              {userName}
+            </Link>
+            <div className="flex flex-wrap items-center gap-1 text-xs text-slate-500 font-medium">
+              <span>@{userName?.split(" ")[0].toLowerCase()}</span>
+              <span>·</span>
+              <span className="hover:underline">
+                {createdAt
+                  ? formatDistanceToNow(new Date(createdAt), {
+                      addSuffix: true,
+                    }).replace("about ", "")
+                  : "just now"}
+              </span>
 
-            <div>
-              <Link
-                to={`/profile/${userId}`}
-                className="cursor-pointer text-[15px] font-bold text-gray-900 leading-none hover:text-blue-600 transition-colors"
-              >
-                {userName}
-              </Link>
-
-              <div className="flex items-center gap-2 mt-1.5">
-                <p className="text-[12px] text-gray-500 font-medium">
-                  {formatedPostDate}
-                </p>
-
-                <span className="text-gray-300">•</span>
-
-                {/* Privacy Selector UI Only */}
-                {userData?.id == userId && (
-                  <div className="flex items-center gap-1.5 text-gray-400">
-                    {/* الأيقونة الجانبية */}
-                    <div className="shrink-0">
-                      <FaGlobeAmericas size={10} />
-                    </div>
-
-                    {/* النص */}
-                    <span className="text-[11px] font-bold capitalize leading-none">
-                      {
-                        {
-                          public: "Public",
-                          following: "Followers",
-                          only_me: "Only me",
-                        }[privacy]
-                      }
-                    </span>
-                  </div>
-                )}
+              {/* Privacy Display in Header */}
+              <span className="mx-1">·</span>
+              <div className="flex items-center gap-1.5 text-slate-400">
+                <div className="shrink-0">
+                  {privacy === "only_me" ? (
+                    <Lock size={10} />
+                  ) : privacy === "following" ? (
+                    <Users size={10} />
+                  ) : (
+                    <Earth size={10} />
+                  )}
+                </div>
+                <span className="text-[11px] font-bold capitalize leading-none">
+                  {privacy === "public"
+                    ? "Public"
+                    : privacy === "following"
+                      ? "Followers"
+                      : "Only me"}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Three dots button with menu */}
+          {/* Context Menu */}
           <div className="relative" ref={menuRef}>
             <button
-            
               onClick={() => setMenuOpen(!menuOpen)}
-              className=" cursor-pointer rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors focus:outline-none"
-              aria-haspopup="true"
-              aria-expanded={menuOpen}
-              
+              className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer active:scale-90"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-ellipsis"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
+              <Ellipsis size={20} />
             </button>
-
             {menuOpen && (
-              <div className="absolute right-0 z-20 mt-1 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg py-1">
-                <button
-                  disabled={savePostIsPending}
-                  onClick={() => {
-                    setIsSaved(!isSaved);
-                    savePostMutate();
-                    setMenuOpen(false);
-                  }}
-                  className=" cursor-pointer flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-bookmark"
-                    aria-hidden="true"
+              <div className="absolute right-0 z-[100] mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex flex-col p-1.5">
+                  <button
+                    disabled={savePostIsPending}
+                    onClick={() => {
+                      setIsSaved(!isSaved);
+                      savePostMutate();
+                      setMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold transition-colors ${isSaved ? "text-blue-600 bg-blue-50/50" : "text-slate-700 hover:bg-slate-50"}`}
                   >
-                    <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"></path>
-                  </svg>
-                  {savePostIsPending
-                    ? "Saving..."
-                    : isSaved
-                      ? "Unsave Post"
-                      : "save Post"}
-                </button>
-                {userData?.id === userId && (
-                  <>
-                    <button
-                      onClick={handlePostUpdateBtn}
-                      className=" cursor-pointer flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      <MdModeEdit size={16} className="text-gray-500" />
-                      Update Post
-                    </button>
-                    <div className="h-px bg-gray-100 my-1 w-full"></div>
-                    <button
-                      onClick={deleteMutate}
-                      className=" cursor-pointer flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      <MdDeleteOutline size={16} />
-                      {deleteIsPending ? "Deleting..." : "Delete Post"}
-                    </button>
-                  </>
-                )}
+                    <Bookmark
+                      size={18}
+                      className={isSaved ? "fill-blue-600" : ""}
+                    />
+                    {isSaved ? "Saved" : "Save Post"}
+                  </button>
+                  {userData?.id === userId && (
+                    <>
+                      <div className="my-1 h-px bg-slate-100 mx-2" />
+                      <button
+                        onClick={handlePostUpdateBtn}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                      >
+                        <Edit2 size={18} /> Edit Post
+                      </button>
+
+                      {/* زرار المسح المباشر */}
+                      <button
+                        disabled={deleteIsPending}
+                        onClick={() => {
+                          deleteMutate();
+                          setMenuOpen(false);
+                        }}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 size={18} />
+                        <span>
+                          {deleteIsPending ? "Deleting..." : "Delete Post"}
+                        </span>
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Post content */}
-        <p
-          className={`text-gray-800 text-[15px] leading-relaxed mb-3 whitespace-pre-wrap wrap-break-word ${!!showUpdateInput && "hidden"}`}
-        >
-          {body}
-        </p>
-
-        <form
-          onSubmit={handleSubmit(updateMutate)}
-          className={`mt-3 mb-3 ${!showUpdateInput && "hidden"}`}
-        >
-          {/* Privacy Selector UI Only */}
-          <div className="relative flex items-center mb-3 w-fit group">
-            {/* الأيقونة الجانبية */}
-            <div className="absolute left-2.5 text-gray-400 group-focus-within:text-blue-500 transition-colors pointer-events-none">
-              <FaGlobeAmericas size={11} />
-            </div>
-
-            <select
-              className="appearance-none bg-gray-100/80 border border-gray-200 text-[12px] font-bold text-gray-600 py-1.5 pl-8 pr-8 rounded-lg cursor-pointer outline-none transition-all hover:bg-gray-200 focus:ring-2 focus:ring-blue-500/10"
-              {...register("privacy")}
+        {/* --- Content / Body --- */}
+        <div className="mt-3">
+          {!showUpdateInput ? (
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">
+              {body}
+            </p>
+          ) : (
+            <form
+              onSubmit={handleSubmit(updateMutate)}
+              className="animate-in fade-in slide-in-from-top-2"
             >
-              <option value="public">public</option>
-              <option value="following">followers</option>
-              <option value="only_me">only me</option>
-            </select>
+              {/* Privacy Selector in Update Form */}
+              <div className="relative flex items-center mb-3 w-fit group">
+                <div className="absolute left-2.5 text-slate-400 group-focus-within:text-blue-500 transition-colors pointer-events-none">
+                  <Earth size={11} />
+                </div>
 
-            {/* سهم الاختيار */}
-            <div className="absolute right-2.5 text-gray-400 pointer-events-none">
-              <FaChevronDown size={9} />
-            </div>
-          </div>
+                <select
+                  className="appearance-none bg-slate-100/80 border border-slate-200 text-[12px] font-bold text-slate-600 py-1.5 pl-8 pr-8 rounded-lg cursor-pointer outline-none transition-all hover:bg-slate-200 focus:ring-2 focus:ring-blue-500/10"
+                  {...register("privacy")}
+                >
+                  <option value="public">public</option>
+                  <option value="following">followers</option>
+                  <option value="only_me">only me</option>
+                </select>
 
-          <textarea
-            maxLength={5000}
-            className="min-h-30 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] outline-none transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-y"
-            {...register("body")}
+                <div className="absolute right-2.5 text-slate-400 pointer-events-none">
+                  <ChevronDown size={10} />
+                </div>
+              </div>
+
+              <textarea
+                {...register("body")}
+                className="w-full min-h-[100px] rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+              />
+              <div className="mt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUpdateInput(false)}
+                  className="text-xs font-bold text-slate-500 px-3 py-1.5 hover:bg-slate-100 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="text-xs font-bold bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700"
+                >
+                  {updateIsPending ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {/* --- Image --- */}
+      {postPhoto && !showUpdateInput && (
+        <div
+          className="cursor-pointer border-t border-slate-50 overflow-hidden"
+          onClick={() => setIsImagePreviewOpen(true)}
+        >
+          <img
+            src={postPhoto}
+            alt="post"
+            className="w-full max-h-[500px] object-cover hover:scale-[1.01] transition-transform duration-500"
           />
+        </div>
+      )}
 
-          <div className="mt-3 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setShowUpdateInput(false);
-                reset();
-              }}
-              className=" cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className=" cursor-pointer rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60 transition-colors"
-            >
-              {updateIsPending ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
-        </form>
-
-        {/* Post image */}
-        {postPhoto && (
-          <div
-            onClick={openImagePreview}
-            className="cursor-pointer rounded-xl overflow-hidden mt-3 mb-4 border border-gray-100 bg-gray-50"
-          >
-            <img
-              src={postPhoto}
-              alt={body || "post image"}
-              className="w-full max-h-125 object-cover hover:opacity-95 transition-opacity"
-            />
-          </div>
-        )}
-
-        {/* likes, comments, shares */}
-        <div className="flex items-center justify-between text-[13px] text-gray-500 py-3 border-b border-gray-100">
-          <div className="flex items-center gap-1.5 cursor-pointer hover:underline">
-            <div className="bg-blue-600 p-1 rounded-full text-white">
-              <AiFillLike size={10} />
-            </div>
-            <span>{likes.length}</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={openComments}
-              className="cursor-pointer hover:underline"
-            >
-              {commentsCount} comments
-            </button>
-            <span className="cursor-pointer hover:underline flex items-center gap-1">
-              {sharesCount} shares
+      {/* --- Footer Stats --- */}
+      <div className="px-4 pb-2 pt-3 text-sm text-slate-500">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#1877f2] text-white">
+              <ThumbsUp size={12} fill="white" />
             </span>
+            <button className="font-semibold hover:text-[#1877f2] hover:underline transition-colors">
+              {likes?.length || 0} likes
+            </button>
           </div>
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex items-center justify-between gap-1 pt-2">
-          {/* Like button */}
-          <button
-            disabled={likePostIsPending}
-            onClick={() => likePostMutate()}
-            className={` cursor-pointer flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg font-medium text-[14px] transition-colors ${
-              isLiked
-                ? "text-blue-600 bg-blue-50/50 hover:bg-blue-100"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            {isLiked ? (
-              <AiFillLike className="text-xl" />
-            ) : (
-              <AiOutlineLike className="text-xl text-gray-500" />
-            )}
-            <span>{likePostIsPending ? "Liking..." : "Like"}</span>
-          </button>
-
-          {/* Comment button */}
-          <button
-            onClick={openComments}
-            className=" cursor-pointer flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg text-gray-600 font-medium text-[14px] hover:bg-gray-100 transition-colors"
-          >
-            <FaRegComment className="text-[18px] text-gray-500" />
-            <span>Comment</span>
-          </button>
-
-          {/* Share button */}
-          <button className=" cursor-pointer flex-1 flex items-center justify-center gap-2 px-2 py-2.5 rounded-lg text-gray-600 font-medium text-[14px] hover:bg-gray-100 transition-colors">
-            <FaShare className="text-[18px] text-gray-500" />
-            <span>Share</span>
-          </button>
+          <div className="flex items-center gap-3 text-xs sm:text-sm">
+            <span className="inline-flex items-center gap-1">
+              <Repeat2 size={13} /> {sharesCount || 0} shares
+            </span>
+            <span>{commentsCount || 0} comments</span>
+          </div>
         </div>
       </div>
 
-      <div className="px-4 sm:px-5 pb-3">
-        {!isDetailes && (
-          <div className="mt-2 flex justify-center">
-            <Link
-              to={`/detailes/${postId}`}
-              className="text-blue-600 text-sm font-medium hover:underline"
-            >
-              View detailed post
-            </Link>
-          </div>
-        )}
+      <div className="mx-4 border-t border-slate-200" />
 
-        {!isDetailes && topComment && (
-          <div className="mt-3">
-            <CommentCard
-              comment={topComment}
-              post={post}
-              onOpenComments={openComments}
-            />
-          </div>
-        )}
-
-        {isDetailes && commentsIsLoading && (
-          <div className="mt-4">
-            <LoadingComments />
-          </div>
-        )}
-
-        {commentsIsFetched && isDetailes && postComments && (
-          <div className="mt-4 border-t border-gray-100 pt-4">
-            <CommentCard comment={postComments} isDetailes={true} post={post} />
-          </div>
-        )}
+      {/* --- Bottom Actions --- */}
+      <div className="grid grid-cols-3 gap-1 p-1">
+        <button
+          onClick={() => likePostMutate()}
+          disabled={likePostIsPending}
+          className={`flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-bold transition-all cursor-pointer ${isLiked ? "text-[#1877f2] bg-blue-50/50" : "text-slate-600 hover:bg-slate-100"}`}
+        >
+          <ThumbsUp size={18} fill={isLiked ? "currentColor" : "none"} />
+          <span>{likePostIsPending ? "liking..." : "Like"}</span>
+        </button>
+        <button
+          onClick={() => setIsCommentsOpen(true)}
+          className="flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+        >
+          <MessageCircle size={18} />
+          <span>Comment</span>
+        </button>
+        <button className="flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">
+          <Share2 size={18} />
+          <span>Share</span>
+        </button>
       </div>
 
-      {/* Modals */}
+      {/* --- Top Comment (Preview) --- */}
+      {!isDetails && topComment && !isCommentsOpen && (
+        <CommentCard
+          comment={topComment}
+          post={post}
+          onOpenComments={() => setIsCommentsOpen(true)}
+        />
+      )}
+
+      {/* --- Overlays/Modals --- */}
       {isImagePreviewOpen && (
-        <ImagePreview image={postPhoto} onClose={closeImagePreview} />
+        <ImagePreview
+          image={postPhoto}
+          onClose={() => setIsImagePreviewOpen(false)}
+        />
       )}
 
       {isCommentsOpen && (
         <AllComments
-          comments={postComments}
-          onClose={closeComments}
+          postId={postId}
+          onClose={() => setIsCommentsOpen(false)}
           isLoading={commentsIsLoading}
           post={post}
+          comments={postComments}
         />
       )}
     </article>
