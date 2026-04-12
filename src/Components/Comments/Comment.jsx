@@ -9,10 +9,12 @@ import { IoPencilOutline, IoTrashOutline } from "react-icons/io5";
 import { MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLikeComment } from "../../CustomHooks/usePostComments";
+import ImagePreview from "../PostCard/ImagePreview";
+import CommentReply from "./Reply/CommentReply";
 
-export default function Comment({ comment, post }) {
+export default function Comment({ comment, post, isReply = false }) {
   const { _id: postId } = post;
-  const { _id: commentId, likes, commentCreator } = comment;
+  const { _id: commentId, likes, commentCreator, repliesCount } = comment;
   const { userData } = useContext(AuthContext);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,7 +22,6 @@ export default function Comment({ comment, post }) {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // صلاحيات المستخدم
   const isCommentOwner = commentCreator?._id === userData?.id;
   const isPostOwner = post?.user?._id === userData?.id;
   const canManageComment = isCommentOwner || isPostOwner;
@@ -89,6 +90,13 @@ export default function Comment({ comment, post }) {
     useLikeComment(postId, commentId);
   const isLiked = likes?.some((id) => id === userData?.id);
 
+  // ==========================IMAGE PREVIEW==================================
+
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+
+  // =======================REPLY=========================
+  const [showReply, setShowReply] = useState(false);
+
   return (
     <div className="group relative flex items-start gap-2 mb-4">
       {/* 1. Profile Image */}
@@ -117,7 +125,7 @@ export default function Comment({ comment, post }) {
           ) : (
             <form
               onSubmit={handleSubmit(updateMutate)}
-              className="mt-2 min-w-[180px]"
+              className="mt-2 min-w-45"
             >
               <input
                 {...register("content")}
@@ -141,9 +149,10 @@ export default function Comment({ comment, post }) {
 
           {comment.image && !showUpdateInput && (
             <img
+              onClick={() => setIsImagePreviewOpen(true)}
               src={comment.image}
               alt="attachment"
-              className="mt-2 max-h-60 w-full rounded-xl object-cover border border-slate-50"
+              className="mt-2 cursor-pointer max-h-60 w-full rounded-xl object-cover border border-slate-50"
             />
           )}
 
@@ -196,12 +205,32 @@ export default function Comment({ comment, post }) {
             {likeCommentIsPending ? "Liking..." : isLiked ? "Liked" : "Like"}
             {likes?.length > 0 && `(${likes.length})`}
           </button>
-          <button className="hover:underline hover:text-blue-600">Reply</button>
+          {!isReply && (
+            <button
+              onClick={() => setShowReply(!showReply)}
+              className={`hover:underline hover:text-blue-600 ${showReply && "text-blue-600"}`}
+            >
+              {showReply ? "Hide Reply" : `Reply(${repliesCount})`}
+            </button>
+          )}
+
           <span className="font-normal opacity-60 italic">
             {formatedPostDate}
           </span>
         </div>
+        {/*===================COMMENT REPLY=========================== */}
+        {showReply && !isReply && (
+          <div>
+            <CommentReply post={post} comment={comment} />
+          </div>
+        )}
       </div>
+      {isImagePreviewOpen && (
+        <ImagePreview
+          image={comment.image}
+          onClose={() => setIsImagePreviewOpen(false)}
+        />
+      )}
     </div>
   );
 }

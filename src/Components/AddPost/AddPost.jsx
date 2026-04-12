@@ -34,7 +34,7 @@ export default function AddPost() {
   const isFormEmpty =
     !bodyValue?.trim() && (!imageValue || imageValue.length === 0);
 
-  // إغلاق الإيموجي بيكر عند الضغط في أي مكان خارج المكون
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (emojiRef.current && !emojiRef.current.contains(event.target)) {

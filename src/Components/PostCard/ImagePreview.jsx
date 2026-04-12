@@ -20,13 +20,6 @@ export default function ImagePreview({ image, onClose }) {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = image;
-    link.download = `social-up-image-${Date.now()}`;
-    link.click();
-  };
-
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-in fade-in duration-300"

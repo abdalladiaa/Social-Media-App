@@ -14,8 +14,6 @@ export default function PostDetails() {
     `posts/${postId}`,
   );
 
-  console.log(data, "data");
-
   if (isLoading) return <LoadingCard />;
 
   if (isError || !data?.data?.post) {

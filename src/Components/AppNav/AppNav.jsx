@@ -38,7 +38,6 @@ export default function Navbar() {
 
   // ==================================== NOTIFICATIONS ====================================
   const { data } = useNotifications(getUnreadCountNotifications, ["NotificationCount"]);
-  console.log(data);
   
   const notificationCount = data?.data?.unreadCount || 0;
 

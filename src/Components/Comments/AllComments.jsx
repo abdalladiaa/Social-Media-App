@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 import Comment from "./Comment";
 import LoadingComments from "./LoadingComments";
@@ -23,10 +23,23 @@ export default function AllComments({
     if (e.target === e.currentTarget) onClose?.();
   };
 
+  // redirect wheel events that happen on the backdrop into the modal's scrollable container
+  const scrollRef = useRef(null);
+  const handleBackdropWheel = (e) => {
+    // if the wheel event started inside the scrollable content, allow normal behavior
+    if (scrollRef.current && scrollRef.current.contains(e.target)) return;
+    if (!scrollRef.current) return;
+
+    // scroll the modal content by the wheel delta and prevent the page from scrolling
+    scrollRef.current.scrollBy({ top: e.deltaY, left: 0, behavior: "auto" });
+    e.preventDefault();
+  };
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-4"
       onClick={handleBackdropClick}
+      onWheel={handleBackdropWheel}
     >
       <div className="relative w-full max-w-xl bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl flex flex-col h-[90vh] sm:max-h-[85vh] overflow-hidden">
         {/* --- Header: Clean & Static --- */}
@@ -48,7 +61,7 @@ export default function AllComments({
         </div>
 
         {/* --- Comments List Container --- */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2 bg-slate-50/20 custom-scrollbar">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4 space-y-2 bg-slate-50/20 custom-scrollbar">
           {isLoading ? (
             <div className="py-10">
               <LoadingComments />

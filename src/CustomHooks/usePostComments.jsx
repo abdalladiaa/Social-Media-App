@@ -17,7 +17,6 @@ export default function usePostComments(postId, isEnabled = true) {
       throw err;
     }
   }
-
   const { data, isLoading, isFetching, isFetched, isError } = useQuery({
     queryFn: getPostComments,
     queryKey: ["comments", postId],
@@ -54,7 +53,7 @@ export function useDeleteComment() {
     "Failed to delete comment",
   );
 }
-
+// ! LIKE comment
 export function useLikeComment(postId, commentId) {
   async function likeComment() {
     const { data } = await axios.put(

@@ -3,18 +3,12 @@ import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
-// Context & Hooks
 import { AuthContext } from "../../Context/AuthContext";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import usePostComments from "../../CustomHooks/usePostComments";
-
-// Components
 import CommentCard from "../Comments/CommentCard";
 import ImagePreview from "./ImagePreview";
 import AllComments from "../Comments/AllComments";
-
-// Helpers & Icons
 import { headersObjData } from "../../Helper/HeadersObj";
 import {
   Earth,
@@ -30,14 +24,12 @@ import {
   Lock,
   Users,
 } from "lucide-react";
-
-// Functions
 import { deletePostFunc } from "../../utils/PostCardFunctions/deletePostFunc";
 import { likePostFunc } from "../../utils/PostCardFunctions/LikePostFunc";
 import { SavePostFunc } from "../../utils/PostCardFunctions/SavePostFunc";
 
 export default function PostCard({ post, isDetails = false }) {
-  // --- States & Context ---
+
   const { userData } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showUpdateInput, setShowUpdateInput] = useState(false);
@@ -331,6 +323,12 @@ export default function PostCard({ post, isDetails = false }) {
               <Repeat2 size={13} /> {sharesCount || 0} shares
             </span>
             <span>{commentsCount || 0} comments</span>
+          <Link
+            to={`/details/${postId}`}
+            className="flex items-center justify-center rounded-md py-2.5 text-xs font-bold text-blue-600 hover:text-blue-700"
+          >
+            <span>View Details</span>
+          </Link>
           </div>
         </div>
       </div>
@@ -368,6 +366,7 @@ export default function PostCard({ post, isDetails = false }) {
           onOpenComments={() => setIsCommentsOpen(true)}
         />
       )}
+      {isDetails && <CommentCard commentsIsLoading = {commentsIsLoading} comment={postComments} isDetails={true} post={post} />}
 
       {/* --- Overlays/Modals --- */}
       {isImagePreviewOpen && (

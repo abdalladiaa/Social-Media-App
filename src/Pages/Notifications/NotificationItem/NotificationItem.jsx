@@ -66,7 +66,7 @@ export default function NotificationItem({ notification, onMarkAsRead }) {
       <Link
         to={linkItem}
         className={`group flex gap-4 rounded-[20px] border p-4 transition-all duration-200 hover:shadow-sm ${
-          isRead ? "border-gray-100" : "border-blue-100"
+          isRead ? "border-gray-100" : "border-blue-100 bg-[#edf4ff]"
         }`}
       >
         {/* Avatar Section */}
