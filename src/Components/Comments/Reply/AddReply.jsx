@@ -45,8 +45,8 @@ export default function AddReply({ postId, commentId, targetName }) {
         setShowEmoji(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   const onEmojiClick = (emojiData) => {
@@ -154,7 +154,10 @@ export default function AddReply({ postId, commentId, targetName }) {
 
               <button
                 type="button"
-                onClick={() => setShowEmoji((prev) => !prev)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEmoji((prev) => !prev);
+                }}
                 className={`inline-flex items-center justify-center rounded-full p-1.5 transition-colors ${
                   showEmoji
                     ? "text-amber-500 bg-amber-50"
@@ -187,7 +190,7 @@ export default function AddReply({ postId, commentId, targetName }) {
       </form>
 
       {showEmoji && (
-        <div className="absolute bottom-full left-0 z-50 mb-2 shadow-2xl border rounded-2xl overflow-hidden">
+        <div className="absolute bottom-full left-0 z-[1000] mb-2 shadow-2xl border rounded-2xl overflow-hidden">
           <EmojiPicker
             onEmojiClick={onEmojiClick}
             width={280}

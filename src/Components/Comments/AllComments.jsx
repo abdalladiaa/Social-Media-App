@@ -93,7 +93,7 @@ export default function AllComments({
 
         {/* --- Footer (Add Comment) --- */}
         <div className="p-3 sm:p-5 bg-white border-t border-slate-50 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
-          <div className="max-w-full overflow-hidden">
+          <div className="max-w-full relative">
             <AddComment postId={post?._id} />
           </div>
         </div>
