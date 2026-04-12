@@ -58,7 +58,7 @@ export default function PostCard({ post, isDetails = false }) {
   console.log(post);
 
   const { name: userName, photo: UserPhoto, _id: userId } = post?.user || {};
-  const isLiked = likes?.some((id) => id === userData?._id);
+  const isLiked = likes?.some((id) => id === userData?.id);
 
   const [isSaved, setIsSaved] = useState(bookmarked);
 
@@ -233,7 +233,7 @@ export default function PostCard({ post, isDetails = false }) {
                       />
                       {isSaved ? "Saved" : "Save Post"}
                     </button>
-                    {userData?._id === userId && (
+                    {userData?.id === userId && (
                       <>
                         <div className="my-1 h-px bg-slate-100 mx-2" />
                         <button

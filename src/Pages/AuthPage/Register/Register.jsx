@@ -5,7 +5,6 @@ import { registerationSchema } from "../../../Schema/AuthSchema";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   FaMale,
   FaFemale,
@@ -21,7 +20,6 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const {
     register,
@@ -54,7 +52,6 @@ export default function Register() {
       if (data.success) {
         setMsg("success");
         localStorage.setItem("token", data.data.token);
-        queryClient.clear();
         navigate("/");
       }
     } catch (err) {
