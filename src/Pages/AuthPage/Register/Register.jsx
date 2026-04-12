@@ -51,8 +51,7 @@ export default function Register() {
       );
       if (data.success) {
         setMsg("success");
-        localStorage.setItem("token", data.data.token);
-        navigate("/");
+        navigate("/auth");
       }
     } catch (err) {
       const serverError =
