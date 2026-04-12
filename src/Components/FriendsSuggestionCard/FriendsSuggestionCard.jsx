@@ -40,7 +40,6 @@ export default function FriendsSuggestionCard() {
         </Link>
       </div>
 
-      {/* --- تصميم الديسكتوب (الكارت الكامل) --- */}
       <div className="hidden xl:block bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#E2E8F0] p-5 w-full max-w-sm">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -74,7 +73,6 @@ export default function FriendsSuggestionCard() {
 
         <div className="space-y-3">
           {isLoading ? (
-            /* حالة التحميل: بنعرض الـ Skeletons */
             <>
               <LoadingFriendSuggestion />
               <LoadingFriendSuggestion />
@@ -84,7 +82,7 @@ export default function FriendsSuggestionCard() {
             suggestions.map((user) => <FriendItem key={user._id} user={user} />)
           ) : (
             <div className="py-4 text-center">
-              <p className="text-sm font-medium text-slate-500 font-['Cairo']">
+              <p className="text-sm font-medium text-slate-500">
                 No users matched your search.
               </p>
             </div>

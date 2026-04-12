@@ -3,7 +3,6 @@ import { FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGenericMutation } from "../../../CustomHooks/useGenericMutation";
 import { addFollow } from "../../../utils/FollowFunc/FollowFunc";
-// استيراد الـ Spinner
 import { Oval } from "react-loader-spinner";
 
 export default function FriendItem({ user }) {

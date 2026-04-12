@@ -14,7 +14,7 @@ export default function AddReply({ postId, commentId, targetName }) {
   const { photo, name } = userData || {};
 
   const emojiPickerRef = useRef(null);
-  const textareaRef = useRef(null); // ريف للـ textarea عشان الـ focus
+  const textareaRef = useRef(null);
   const [preview, setPreview] = useState(null);
   const [showEmoji, setShowEmoji] = useState(false);
 
@@ -52,7 +52,6 @@ export default function AddReply({ postId, commentId, targetName }) {
   const onEmojiClick = (emojiData) => {
     const currentVal = watch("content") || "";
     setValue("content", currentVal + emojiData.emoji, { shouldDirty: true });
-    // نرجع الفوكس للـ textarea بعد اختيار الإيموجي
     setTimeout(() => textareaRef.current?.focus(), 0);
   };
 
@@ -99,16 +98,14 @@ export default function AddReply({ postId, commentId, targetName }) {
         onSubmit={handleSubmit(handleFormSubmit)}
         className="flex items-start gap-2"
       >
-        {/* صورة بروفايل أصغر للردود */}
         <img
           src={photo}
           alt={name}
           className="h-7 w-7 mt-0.5 shrink-0 rounded-full object-cover shadow-sm bg-slate-100"
         />
 
-        {/* حاوية الإدخال الرمادية */}
+
         <div className="flex-1 min-w-0 rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 transition-all focus-within:border-[#c7dafc] focus-within:bg-white shadow-sm">
-          {/* معاينة الصورة قبل الإرسال */}
           {preview && (
             <div className="mb-2 relative inline-block">
               <img
@@ -143,7 +140,6 @@ export default function AddReply({ postId, commentId, targetName }) {
 
           <div className="mt-1 flex items-center justify-between">
             <div className="flex items-center gap-1">
-              {/* أيقونة الصورة */}
               <label
                 className="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-slate-500 transition-colors hover:bg-slate-200 hover:text-emerald-600"
               >
@@ -156,7 +152,6 @@ export default function AddReply({ postId, commentId, targetName }) {
                 />
               </label>
 
-              {/* أيقونة الإيموجي */}
               <button
                 type="button"
                 onClick={() => setShowEmoji((prev) => !prev)}
@@ -191,7 +186,6 @@ export default function AddReply({ postId, commentId, targetName }) {
         </div>
       </form>
 
-      {/* الـ Emoji Picker بمقاس أصغر عشان الردود */}
       {showEmoji && (
         <div className="absolute bottom-full left-0 z-50 mb-2 shadow-2xl border rounded-2xl overflow-hidden">
           <EmojiPicker

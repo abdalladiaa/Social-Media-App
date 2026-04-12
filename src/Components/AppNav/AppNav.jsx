@@ -37,8 +37,10 @@ export default function Navbar() {
     }`;
 
   // ==================================== NOTIFICATIONS ====================================
-  const { data } = useNotifications(getUnreadCountNotifications, ["NotificationCount"]);
-  
+  const { data } = useNotifications(getUnreadCountNotifications, [
+    "NotificationCount",
+  ]);
+
   const notificationCount = data?.data?.unreadCount || 0;
 
   return (

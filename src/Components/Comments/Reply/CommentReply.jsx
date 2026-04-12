@@ -38,7 +38,6 @@ export default function CommentReply({ post, comment }) {
           (replies.length > 0 ? (
             replies.map((reply) => (
               <div key={reply._id} className="relative">
-                {/* خط أفقي صغير لكل رد */}
                 <span className="absolute -left-4 top-4 h-px w-4 bg-slate-300" />
                 <Comment post={post} comment={reply} isReply />
               </div>

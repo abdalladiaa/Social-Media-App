@@ -98,10 +98,8 @@ return (
   <div className="relative">
     <form
       onSubmit={handleSubmit(mutate)}
-      /* أضفنا w-full و max-w-full وضبطنا الـ padding */
       className="flex w-full max-w-full items-end gap-2 bg-white p-3 sm:gap-3"
     >
-      {/* الصورة هنصغرها شوية في الموبايل */}
       <img
         src={photo}
         alt={name}
@@ -133,7 +131,6 @@ return (
             {...register("content")}
             rows={1}
             placeholder="Write..."
-            /* min-w-0 مهمة جداً عشان الـ flex-1 ميضربش */
             className="flex-1 min-w-0 min-h-[40px] max-h-32 resize-none bg-transparent py-2.5 text-[13px] sm:text-sm outline-none"
             onInput={autoResize}
           />
@@ -179,7 +176,6 @@ return (
       </button>
     </form>
 
-    {/* تعديل مكان الـ EmojiPicker عشان ميخرجش بره الشاشة */}
     {showEmoji && (
       <div
         ref={emojiPickerRef}

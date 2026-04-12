@@ -127,7 +127,7 @@ export default function Comment({ comment, post, isReply = false }) {
           </div>
 
           {!showUpdateInput ? (
-            <p className="mt-1 whitespace-pre-wrap text-[13px] leading-snug text-slate-800">
+            <p className="mt-1 whitespace-pre-wrap break-words text-[13px] leading-snug text-slate-800">
               {comment.content}
             </p>
           ) : (
@@ -169,11 +169,11 @@ export default function Comment({ comment, post, isReply = false }) {
 
           {/* More Actions Menu */}
           {canManageComment && !showUpdateInput && (
-            <div className="absolute -right-8 top-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 ref={buttonRef}
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-all"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/50 transition-all bg-white/40 backdrop-blur-sm"
               >
                 <MoreHorizontal size={14} />
               </button>

@@ -56,12 +56,10 @@ export default function PostCard({ post, isDetails = false }) {
 
   const sharedPostImage = sharedPost?.image;
   console.log(post);
-  
 
   const { name: userName, photo: UserPhoto, _id: userId } = post?.user || {};
   const isLiked = likes?.some((id) => id === userData?.id);
 
-  // isSaved مع rollback لو الـ mutation فشل
   const [isSaved, setIsSaved] = useState(bookmarked);
 
   // --- Close Menu on Outside Click ---
@@ -90,7 +88,6 @@ export default function PostCard({ post, isDetails = false }) {
   const { mutate: likePostMutate, isPending: likePostIsPending } =
     useGenericMutation(() => likePostFunc(postId), ["allPosts", "userPosts"]);
 
-  // 3. Save Post - مع rollback لو فشل
   const { mutate: savePostMutate, isPending: savePostIsPending } =
     useGenericMutation(() => SavePostFunc(postId), ["allPosts", "userPosts"]);
 
@@ -99,7 +96,7 @@ export default function PostCard({ post, isDetails = false }) {
     setIsSaved(!isSaved); // optimistic update
     setMenuOpen(false);
     savePostMutate(undefined, {
-      onError: () => setIsSaved(prevSaved), // rollback لو فشل
+      onError: () => setIsSaved(prevSaved),
     });
   };
 
@@ -273,7 +270,6 @@ export default function PostCard({ post, isDetails = false }) {
                 <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">
                   {body}
                 </p>
-                {/* Shared Post - مرة واحدة بس هنا */}
                 {sharedPost && (
                   <div className="mt-3">
                     <SharedPostPreview
@@ -451,7 +447,9 @@ export default function PostCard({ post, isDetails = false }) {
           originalPost={post}
         />
       )}
-      {likes.length > 0 && ShowPostLikes && <PostLikesModal likes={likes} setShowLikesModal={setShowPostLikes} />}
+      {likes.length > 0 && ShowPostLikes && (
+        <PostLikesModal likes={likes} setShowLikesModal={setShowPostLikes} />
+      )}
     </>
   );
 }
