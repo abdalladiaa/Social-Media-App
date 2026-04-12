@@ -98,49 +98,56 @@ export default function Comment({ comment, post, isReply = false }) {
   const [showReply, setShowReply] = useState(false);
 
   return (
-    <div className="group relative flex items-start gap-2 mb-4">
+    <div className="group relative flex items-start gap-2 mb-3">
       {/* 1. Profile Image */}
       <Link to={`/profile/${commentCreator?._id}`} className="shrink-0">
         <img
           alt={commentCreator?.name}
-          className="h-8 w-8 rounded-full object-cover shadow-sm ring-1 ring-slate-100"
+          className="h-8 w-8 rounded-full object-cover shadow-sm transition-transform hover:scale-105"
           src={commentCreator?.photo}
         />
       </Link>
 
       {/* 2. Comment Content Wrapper */}
       <div className="min-w-0 flex-1">
-        <div className="relative inline-block max-w-[90%] sm:max-w-full rounded-2xl bg-white px-3 py-2 border border-slate-100 shadow-sm transition-all group-hover:border-slate-200">
-          <Link
-            to={`/profile/${commentCreator?._id}`}
-            className="truncate text-xs font-bold text-slate-900 hover:underline block mb-0.5"
-          >
-            {commentCreator?.name}
-          </Link>
+        <div className="relative inline-block max-w-[100%] rounded-2xl bg-[#f0f2f5] px-3 py-2 transition-all">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <Link
+                to={`/profile/${commentCreator?._id}`}
+                className="text-xs font-bold text-slate-900 hover:underline"
+              >
+                {commentCreator?.name}
+              </Link>
+              <p className="text-[10px] text-slate-500 leading-none mt-0.5">
+                @{commentCreator?.name?.split(" ").join("_").toLowerCase()} · {formatedPostDate}
+              </p>
+            </div>
+          </div>
 
           {!showUpdateInput ? (
-            <p className="mt-0.5 whitespace-pre-wrap text-[13px] leading-snug text-slate-700">
+            <p className="mt-1 whitespace-pre-wrap text-[13px] leading-snug text-slate-800">
               {comment.content}
             </p>
           ) : (
             <form
               onSubmit={handleSubmit(updateMutate)}
-              className="mt-2 min-w-45"
+              className="mt-2 min-w-[200px]"
             >
               <input
                 {...register("content")}
                 autoFocus
-                className="w-full rounded-xl border border-blue-100 bg-slate-50 px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-blue-500/10"
+                className="w-full rounded-xl border border-blue-100 bg-white px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-blue-500/10"
               />
               <div className="mt-2 flex justify-end gap-2 text-[10px] font-bold">
                 <button
                   type="button"
                   onClick={() => setShowUpdateInput(false)}
-                  className="text-slate-400"
+                  className="text-slate-400 hover:text-slate-600"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="text-blue-600 uppercase">
+                <button type="submit" className="text-blue-600 uppercase hover:text-blue-700">
                   {updateIsPending ? "Saving..." : "Save"}
                 </button>
               </div>
@@ -152,17 +159,17 @@ export default function Comment({ comment, post, isReply = false }) {
               onClick={() => setIsImagePreviewOpen(true)}
               src={comment.image}
               alt="attachment"
-              className="mt-2 cursor-pointer max-h-60 w-full rounded-xl object-cover border border-slate-50"
+              className="mt-2 cursor-pointer max-h-60 w-full rounded-xl object-cover border border-white/50"
             />
           )}
 
           {/* More Actions Menu */}
           {canManageComment && !showUpdateInput && (
-            <div className="absolute -right-8 top-1 transition-opacity">
+            <div className="absolute -right-8 top-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 ref={buttonRef}
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-all"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-all"
               >
                 <MoreHorizontal size={14} />
               </button>
@@ -175,7 +182,7 @@ export default function Comment({ comment, post, isReply = false }) {
                   {isCommentOwner && (
                     <button
                       onClick={handleCommentUpdateBtn}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-blue-50"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-slate-50"
                     >
                       <IoPencilOutline size={14} className="text-blue-500" />
                       Edit
@@ -196,27 +203,29 @@ export default function Comment({ comment, post, isReply = false }) {
         </div>
 
         {/* 3. Footer Actions */}
-        <div className="mt-1 flex items-center gap-3 px-1 text-[11px] font-bold text-slate-500">
-          <button
-            disabled={likeCommentIsPending}
-            onClick={() => likeCommentMutate()}
-            className={`hover:underline transition-colors ${isLiked ? "text-blue-600" : "hover:text-blue-600"}`}
-          >
-            {likeCommentIsPending ? "Liking..." : isLiked ? "Liked" : "Like"}
-            {likes?.length > 0 && `(${likes.length})`}
-          </button>
-          {!isReply && (
+        <div className="mt-1 flex items-center justify-between px-1">
+          <div className="flex items-center gap-4 text-[11px] font-semibold text-colorMain">
+            <span className="text-slate-400 font-normal italic">
+              {formatedPostDate}
+            </span>
+            
             <button
-              onClick={() => setShowReply(!showReply)}
-              className={`hover:underline hover:text-blue-600 ${showReply && "text-blue-600"}`}
+              disabled={likeCommentIsPending}
+              onClick={() => likeCommentMutate()}
+              className={`hover:underline transition-colors ${isLiked ? "text-blue-600" : "text-slate-500 hover:text-blue-600"}`}
             >
-              {showReply ? "Hide Reply" : `Reply(${repliesCount})`}
+              Like{likes?.length > 0 && ` (${likes.length})`}
             </button>
-          )}
-
-          <span className="font-normal opacity-60 italic">
-            {formatedPostDate}
-          </span>
+            
+            {!isReply && (
+              <button
+                onClick={() => setShowReply(!showReply)}
+                className={`transition-colors hover:underline ${showReply ? "text-blue-600" : "text-slate-500 hover:text-blue-600"}`}
+              >
+                {showReply ? "Hide replies" : `Reply${repliesCount > 0 ? ` (${repliesCount})` : ""}`}
+              </button>
+            )}
+          </div>
         </div>
         {/*===================COMMENT REPLY=========================== */}
         {showReply && !isReply && (

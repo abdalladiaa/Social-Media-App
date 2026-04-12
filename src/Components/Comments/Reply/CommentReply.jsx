@@ -16,9 +16,10 @@ export default function CommentReply({ post, comment }) {
   const replies = data?.pages?.flatMap((page) => page.data?.replies) || [];
 
   return (
-    <div className="relative mt-2 ml-4 pl-4 w-[50%]">
+    <div className="relative mt-2 ml-5 pl-4">
+      {/* الخط الجانبي الواصل للردود */}
       {(replies.length > 0 || isFetched) && (
-        <span className="absolute left-0 top-0 bottom-10 w-[1.5px] rounded-full bg-slate-200" />
+        <span className="absolute bottom-10 left-0 top-1 w-px rounded-full bg-slate-300" />
       )}
 
       {isLoading && (
@@ -30,24 +31,26 @@ export default function CommentReply({ post, comment }) {
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {isFetched &&
           (replies.length > 0 ? (
             replies.map((reply) => (
               <div key={reply._id} className="relative">
-                <span className="absolute -left-4 top-4 h-[1.5px] w-4 bg-slate-200" />
+                {/* خط أفقي صغير لكل رد */}
+                <span className="absolute -left-4 top-4 h-px w-4 bg-slate-300" />
                 <Comment post={post} comment={reply} isReply />
               </div>
             ))
           ) : (
-            <p className="text-[10px] text-slate-400 ml-2 italic">
-              No replies yet
-            </p>
+            <p className="text-xs text-slate-500 italic ml-2">No replies yet.</p>
           ))}
 
-        <div className="relative mt-2">
-          <span className="absolute -left-4 top-5 h-[1.5px] w-4 bg-slate-200" />
-          <AddReply postId={postId} commentId={commentId} />
+        <div className="mt-2">
+          <AddReply
+            postId={postId}
+            commentId={commentId}
+            targetName={comment.commentCreator?.name}
+          />
         </div>
       </div>
     </div>

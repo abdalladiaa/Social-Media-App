@@ -9,7 +9,7 @@ import { Smile, SendHorizontal } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { AuthContext } from "../../../Context/AuthContext";
 
-export default function AddReply({ postId, commentId }) {
+export default function AddReply({ postId, commentId, targetName }) {
   const { userData } = useContext(AuthContext);
   const { photo, name } = userData || {};
 
@@ -90,20 +90,24 @@ export default function AddReply({ postId, commentId }) {
   const isFormEmpty = !content?.trim() && !image?.[0];
 
   return (
-    <div className="relative w-full" ref={emojiPickerRef}>
+    <div className="mt-2" ref={emojiPickerRef}>
+      <p className="mb-1 text-[11px] font-semibold text-slate-500">
+        Replying to <span className="text-[#1877f2]">{targetName}</span>
+      </p>
+      
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
-        className="flex items-start gap-2 py-1"
+        className="flex items-start gap-2"
       >
         {/* صورة بروفايل أصغر للردود */}
         <img
           src={photo}
           alt={name}
-          className="h-7 w-7 mt-0.5 shrink-0 rounded-full object-cover ring-1 ring-gray-100"
+          className="h-7 w-7 mt-0.5 shrink-0 rounded-full object-cover shadow-sm bg-slate-100"
         />
 
         {/* حاوية الإدخال الرمادية */}
-        <div className="flex-1 min-w-0 rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 transition-all focus-within:border-[#c7dafc] focus-within:bg-white focus-within:shadow-sm">
+        <div className="flex-1 min-w-0 rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 transition-all focus-within:border-[#c7dafc] focus-within:bg-white shadow-sm">
           {/* معاينة الصورة قبل الإرسال */}
           {preview && (
             <div className="mb-2 relative inline-block">
@@ -115,7 +119,7 @@ export default function AddReply({ postId, commentId }) {
               <button
                 type="button"
                 onClick={() => setValue("image", null)}
-                className="absolute -right-2 -top-2 rounded-full bg-white text-gray-500 shadow-md hover:text-red-500"
+                className="absolute -right-2 -top-2 rounded-full bg-white text-slate-500 shadow-md hover:text-red-500"
               >
                 <IoCloseCircle size={18} />
               </button>
@@ -130,53 +134,51 @@ export default function AddReply({ postId, commentId }) {
             }}
             rows={1}
             placeholder="Write a reply..."
-            className="w-full resize-none bg-transparent px-1 py-1 text-[13px] leading-5 outline-none placeholder:text-slate-500 max-h-32"
+            className="w-full resize-none bg-transparent px-2 py-1 text-xs leading-5 outline-none placeholder:text-slate-500 max-h-[120px] min-h-[38px]"
             onInput={(e) => {
               e.target.style.height = "auto";
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
           />
 
-          <div className="mt-1 flex items-center justify-between border-t border-slate-100 pt-1">
-            <div className="flex items-center gap-0.5">
+          <div className="mt-1 flex items-center justify-between">
+            <div className="flex items-center gap-1">
               {/* أيقونة الصورة */}
               <label
-                htmlFor={`reply-image-${commentId}`}
-                className="cursor-pointer p-1.5 text-slate-500 transition-colors hover:bg-slate-200 rounded-full hover:text-emerald-600"
+                className="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-slate-500 transition-colors hover:bg-slate-200 hover:text-emerald-600"
               >
-                <IoImageOutline size={16} />
+                <IoImageOutline size={14} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register("image")}
+                  className="hidden"
+                />
               </label>
-              <input
-                id={`reply-image-${commentId}`}
-                type="file"
-                accept="image/*"
-                {...register("image")}
-                className="hidden"
-              />
 
               {/* أيقونة الإيموجي */}
               <button
                 type="button"
                 onClick={() => setShowEmoji((prev) => !prev)}
-                className={`p-1.5 rounded-full transition-colors ${
+                className={`inline-flex items-center justify-center rounded-full p-1.5 transition-colors ${
                   showEmoji
                     ? "text-amber-500 bg-amber-50"
-                    : "text-slate-500 hover:bg-slate-200"
+                    : "text-slate-500 hover:bg-slate-200 hover:text-amber-500"
                 }`}
               >
-                <Smile size={16} />
+                <Smile size={14} />
               </button>
             </div>
 
             {/* زر الإرسال */}
             <button
               disabled={isPending || isFormEmpty}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1877f2] text-white transition-all enabled:hover:bg-[#166fe5] enabled:active:scale-90 disabled:bg-[#9ec5ff]"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1877f2] text-white shadow-sm transition-all hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:bg-[#9ec5ff] disabled:opacity-100"
             >
               {isPending ? (
                 <Oval
-                  height={12}
-                  width={12}
+                  height={14}
+                  width={14}
                   color="white"
                   secondaryColor="transparent"
                   strokeWidth={5}
