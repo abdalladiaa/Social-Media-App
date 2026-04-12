@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGenericMutation } from "../../CustomHooks/useGenericMutation";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
@@ -19,6 +19,14 @@ export default function SharePostComp({
   originalPost,
 }) {
   console.log(originalPost);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -119,7 +127,9 @@ export default function SharePostComp({
         <div className="flex items-center justify-end gap-2 border-t border-slate-200 px-4 py-3">
           <button
             type="button"
-            onClick={() =>{ setShowShareComp(false) } }
+            onClick={() => {
+              setShowShareComp(false);
+            }}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60active:scale-95"
           >
             Cancel

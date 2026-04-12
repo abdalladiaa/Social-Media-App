@@ -29,6 +29,7 @@ import { deletePostFunc } from "../../utils/PostCardFunctions/deletePostFunc";
 import { likePostFunc } from "../../utils/PostCardFunctions/LikePostFunc";
 import { SavePostFunc } from "../../utils/PostCardFunctions/SavePostFunc";
 import SharePostComp from "../SharePost/SharePostComp";
+import PostLikesModal from "../PostLikesModal/PostLikesModal";
 
 export default function PostCard({ post, isDetails = false }) {
   const { userData } = useContext(AuthContext);
@@ -54,6 +55,8 @@ export default function PostCard({ post, isDetails = false }) {
   } = post;
 
   const sharedPostImage = sharedPost?.image;
+  console.log(post);
+  
 
   const { name: userName, photo: UserPhoto, _id: userId } = post?.user || {};
   const isLiked = likes?.some((id) => id === userData?.id);
@@ -146,6 +149,10 @@ export default function PostCard({ post, isDetails = false }) {
     isDetails || isCommentsOpen,
   );
   const postComments = commentsData?.data?.comments || [];
+
+  // =======================PEOPLE WHO LIKED THE POST===========================
+
+  const [ShowPostLikes, setShowPostLikes] = useState(false);
 
   return (
     <>
@@ -352,7 +359,10 @@ export default function PostCard({ post, isDetails = false }) {
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#1877f2] text-white">
                 <ThumbsUp size={12} fill="white" />
               </span>
-              <button className="font-semibold hover:text-[#1877f2] hover:underline transition-colors">
+              <button
+                onClick={() => setShowPostLikes(true)}
+                className="font-semibold hover:text-[#1877f2] hover:underline transition-colors"
+              >
                 {likes?.length || 0} likes
               </button>
             </div>
@@ -441,6 +451,7 @@ export default function PostCard({ post, isDetails = false }) {
           originalPost={post}
         />
       )}
+      {likes.length > 0 && ShowPostLikes && <PostLikesModal likes={likes} setShowLikesModal={setShowPostLikes} />}
     </>
   );
 }
@@ -451,14 +462,16 @@ function SharedPostPreview({ sharedPost, setPreviewImage }) {
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-inner">
       <div className="p-3">
         <div className="mb-2 flex items-center gap-2">
-          <img
-            src={
-              sharedPost?.user?.photo ||
-              "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
-            }
-            alt={sharedPost?.user?.name || "User"}
-            className="h-9 w-9 rounded-full object-cover shadow-sm bg-white border border-slate-200"
-          />
+          <Link to={`/profile/${sharedPost?.user?._id}`}>
+            <img
+              src={
+                sharedPost?.user?.photo ||
+                "https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png"
+              }
+              alt={sharedPost?.user?.name || "User"}
+              className="h-9 w-9 rounded-full object-cover shadow-sm bg-white border border-slate-200"
+            />
+          </Link>
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-slate-900 leading-none capitalize">
               {sharedPost?.user?.name}
