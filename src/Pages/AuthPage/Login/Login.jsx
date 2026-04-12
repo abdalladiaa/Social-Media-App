@@ -6,6 +6,7 @@ import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
 import axios from "axios";
 import { AuthContext } from "../../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,7 @@ export default function Login() {
   const [msg, setMsg] = useState();
   const { setToken } = useContext(AuthContext);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -36,6 +38,7 @@ export default function Login() {
       if (data.success) {
         setMsg("success");
         localStorage.setItem("token", data.data.token);
+        queryClient.clear();
         setToken(data.data.token);
         navigate("/");
       }
