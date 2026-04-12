@@ -11,6 +11,9 @@ import Settings from "../Pages/Settings/Settings";
 import MyProfile from "../Pages/MyProfile/MyProfile";
 import PublicProfile from "../Pages/PublicProfile/PublicProfile";
 import SuggestedFriends from "../Pages/SuggestedFriends/SuggestedFriends";
+import Login from "../Pages/AuthPage/Login/Login";
+import Register from "../Pages/AuthPage/Register/Register";
+import { Navigate } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +35,11 @@ export const router = createBrowserRouter([
             <AuthPage />
           </AuthGuard>
         ),
+        children: [
+          { index: true, element: <Navigate to="login" replace /> },
+          { path: "login", element: <Login /> },
+          { path: "register", element: <Register /> },
+        ],
       },
       {
         path: "profile",

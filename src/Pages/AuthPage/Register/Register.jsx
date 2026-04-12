@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerationSchema } from "../../../Schema/AuthSchema";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
 import {
   FaMale,
@@ -269,6 +269,19 @@ export default function Register() {
           />
         )}
       </form>
+
+      {/* Footer Link */}
+      <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p className="text-sm text-gray-500 font-medium">
+          Already have an account?{" "}
+          <Link
+            to="/auth/login"
+            className="text-blue-600 font-bold hover:underline"
+          >
+            Sign in here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { LoginSchema } from "../../../Schema/AuthSchema";
 import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
 import axios from "axios";
 import { AuthContext } from "../../../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -225,16 +225,20 @@ export default function Login() {
           )}
         </button>
 
-        {/* Alert */}
-        {msg && (
-          <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
-            <AuthAlert
-              type={msg === "success" ? "success" : "error"}
-              message={msg}
-            />
-          </div>
-        )}
       </form>
+
+      {/* Footer Link */}
+      <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p className="text-sm text-gray-500 font-medium">
+          Don't have an account?{" "}
+          <Link
+            to="/auth/register"
+            className="text-blue-600 font-bold hover:underline"
+          >
+            Create one for free
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
