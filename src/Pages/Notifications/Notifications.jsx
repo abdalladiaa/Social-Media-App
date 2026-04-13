@@ -7,6 +7,7 @@ import {
   useNotifications,
 } from "../../CustomHooks/useNotifications";
 import { getNotifications } from "../../utils/NotificationsFunc/getNotifications";
+import { BellOff } from "lucide-react";
 
 export default function Notifications() {
   const { data, isLoading, isFetching, isFetched, isError } = useNotifications(
@@ -50,7 +51,7 @@ export default function Notifications() {
 
           <button
             className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-            disabled={markAllAsReadIsPending}
+            disabled={markAllAsReadIsPending || notificationsToShow.length === 0}
             onClick={(e) => {
               e.preventDefault();
               markAllAsReadMutate();
@@ -93,11 +94,25 @@ export default function Notifications() {
         <div className="space-y-2 py-3 sm:py-4">
           {isLoading && <NotificationItemLoading />}
           {isFetched &&
-            notificationsToShow?.map((notification) => (
-              <NotificationItem
-                key={notification._id}
-                notification={notification}
-              />
+            (notificationsToShow?.length > 0 ? (
+              notificationsToShow.map((notification) => (
+                <NotificationItem
+                  key={notification._id}
+                  notification={notification}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="mb-4 rounded-full bg-slate-100 p-4">
+                  <BellOff size={32} className="text-slate-400" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-700">
+                  No notifications yet
+                </h4>
+                <p className="mt-1 text-xs text-slate-400">
+                  We'll notify you when something important happens.
+                </p>
+              </div>
             ))}
         </div>
       </div>
