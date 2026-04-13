@@ -15,11 +15,11 @@ export default function Notifications() {
     ["notifications"],
   );
 
-  const allNotifications = data?.data.notifications;
+  const allNotifications = data?.data?.notifications;
   console.log(allNotifications);
 
   const unReadedNotifications = allNotifications?.filter(
-    (notification) => notification.isRead == false,
+    (notification) => notification?.isRead == false,
   );
   console.log(unReadedNotifications, "un read");
 
@@ -51,7 +51,7 @@ export default function Notifications() {
 
           <button
             className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-            disabled={markAllAsReadIsPending || notificationsToShow.length === 0}
+            disabled={markAllAsReadIsPending || notificationsToShow?.length === 0}
             onClick={(e) => {
               e.preventDefault();
               markAllAsReadMutate();
