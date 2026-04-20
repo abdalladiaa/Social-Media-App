@@ -6,7 +6,6 @@ import axios from "axios";
 import { AuthContext } from "../../../Context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
-// استيراد الأيقونات المطلوبة
 import { User, KeyRound, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import AuthAlert from "../../../Components/AuthAlert/AuthAlert";
 

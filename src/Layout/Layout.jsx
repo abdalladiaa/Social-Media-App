@@ -12,7 +12,7 @@ export default function Layout() {
       {token && <AppNav />}
       
 
-      <main className="mx-auto max-w-6xl px-3 py-3.5">
+      <main className="mx-auto max-w-6xl px-3 py-3.5 mt-10">
         <Outlet />
       </main>
     </div>
